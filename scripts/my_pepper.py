@@ -31,7 +31,7 @@ class PepperOrbbec():
         self.body_status = 4 #Initialise body status with out of scope value
         self.SaidIt = False  #Falg to know if the "Main speech" was pronounced
         self.User = user_msgs.msg.UserData
-        self.User.UserID = input("Please, enter you user ID: ")
+        self.User.UserID = "1"#str(input("Please, enter you user ID: ")) # Enter the ID between " " symbols
         self.User.Flag = True # By default
 
         #self.pepper_engagement.publish("disengage") #Disable awareness in pepper_say
@@ -57,15 +57,19 @@ class PepperOrbbec():
         # spin() simply keeps python from exiting until this node is stopped
         while not rospy.is_shutdown():
             #If you keprint pa.User.UserIDep seeing the body say that you will record and send Flag
-            print pa.User.UserID
+            print self.User.UserID
+            print self.User.Flag
+            print type(self.User.UserID)
+
             if self.SaidIt==False and self.SawIt== True:
                 #self.pepper_say.publish("Hello, would you like to do some exercise?")
                 self.pepper_say.publish("One")
-                time.sleep(1)
+                #time.sleep(1)
                 self.pepper_say.publish("Two")
                 #self.pepper_say.publish("Please, have a sit")
-                time.sleep(4)          #while not self.Sitted:
+                #time.sleep(4)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
+
                 #Send customized message
                 self.User.Flag = True
                 self.record.publish(self.User)
@@ -73,11 +77,15 @@ class PepperOrbbec():
                 self.pepper_say.publish("Recording")
                 time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
+
             elif self.SaidIt == True and self.SawIt== False:
                 self.pepper_say.publish("Doo")
                 time.sleep(4)
+
+                #Send customized message
                 self.User.Flag = False
                 self.record.publish(self.User)
+
                 self.pepper_say.publish("Doo hass")
                 time.sleep(4)
                 self.pepper_say.publish("Doo hass mish!")
