@@ -1,0 +1,8 @@
+Tf diagnostic
+
+  rosrun tf view_frames
+  # to store info about the current broadcasting
+  evince frames.pdf
+  #visualization in a graph
+
+  Read it from http://wiki.ros.org/tf/Tutorials/Introduction%20to%20tf

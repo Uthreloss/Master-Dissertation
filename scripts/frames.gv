@@ -1,0 +1,9 @@
+digraph G {
+"world" -> "shoulder"[label="Broadcaster: /tf_broadcaster\nAverage rate: 29.779 Hz\nMost recent transform: 1531393915.438 ( 0.012 sec old)\nBuffer length: 4.970 sec\n"];
+"world" -> "elbow"[label="Broadcaster: /tf_broadcaster\nAverage rate: 29.779 Hz\nMost recent transform: 1531393915.438 ( 0.012 sec old)\nBuffer length: 4.970 sec\n"];
+"world" -> "hand"[label="Broadcaster: /tf_broadcaster\nAverage rate: 29.779 Hz\nMost recent transform: 1531393915.438 ( 0.012 sec old)\nBuffer length: 4.970 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1531393915.450"[ shape=plaintext ] ;
+ }->"world";
+}

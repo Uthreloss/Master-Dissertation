@@ -1,0 +1,12 @@
+<launch>
+    <!-- Astra Camera Node-->
+    <node pkg="astra_body_tracker" type="astra_body_tracker_node" name="astra_body_tracker_node" output="screen">
+    </node>
+    <!-- Tf Node-->
+    <node name="tf_broadcaster" pkg="tf_broadcaster" type="tf_broadcaster.py" respawn="false" output="screen" >
+      <param name="should" type="string" value="shoulder" />
+    </node>
+    <!-- RVIZ node -->
+    <node pkg="rviz" type="rviz" name="$(anon rviz)" args="~/.rviz/pepper.rviz" />
+    <!-- https://github.com/cse481sp17/cse481c/wiki/Lab-11:-Visualizations-in-ROS-with-RViz -->
+  </launch>

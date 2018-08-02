@@ -1,0 +1,9 @@
+OPEN FIVE TERMINALS OR CREATE A LAUNCH FILE
+
+roscore
+~/Documents/brl_pepper.git/scripts python pepper.py
+rosrun astra_body_tracker astra_body_tracker_node
+rosrun tf_broadcaster my_pepper.py
+rosrun tf_broadcaster data_storing_flag.py BEING IN ~/catkin_ws/src/tf_broadcaster/scripts (To save the .bag files there)
+
+Consider including rviz line
