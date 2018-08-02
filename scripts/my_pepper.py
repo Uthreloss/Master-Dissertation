@@ -4,6 +4,7 @@ import time
 from std_msgs.msg import String
 from std_msgs.msg import Int32
 from std_msgs.msg import Bool
+import user_msgs.msg
 import body_tracker_msgs.msg #Astra Orbbec messages ALL OF THEM BodyTracker & Skeleton check: https://github.com/shinselrobots/body_tracker_msgs/tree/master/msg
 
 
@@ -14,7 +15,8 @@ class PepperOrbbec():
         self.pepper_say = rospy.Publisher('pepper/say', String, queue_size=10)
 
         #Publish a flag for Rosbag to start recoding the topics from the camera
-        self.record = rospy.Publisher('pepper/flag', Bool, queue_size=10)
+        #self.record = rospy.Publisher('pepper/flag', Bool, queue_size=10)
+        self.record = rospy.Publisher('pepper/flag', user_msgs.msg.UserData, queue_size=10)
 
         #Publish pepper awareness disengagement
         self.pepper_engagement = rospy.Publisher('pepper/cmd', String, queue_size=10)
@@ -28,6 +30,10 @@ class PepperOrbbec():
         self.SawIt = False #Flag to know that a person is being tracked
         self.body_status = 4 #Initialise body status with out of scope value
         self.SaidIt = False  #Falg to know if the "Main speech" was pronounced
+        self.User = user_msgs.msg.UserData
+        self.User.UserID = input("Please, enter you user ID: ")
+        self.User.Flag = True # By default
+
         #self.pepper_engagement.publish("disengage") #Disable awareness in pepper_say
         #time.sleep(4)
 
@@ -50,8 +56,8 @@ class PepperOrbbec():
         rate = rospy.Rate(10)
         # spin() simply keeps python from exiting until this node is stopped
         while not rospy.is_shutdown():
-            #If you keep seeing the body say that you will record and send Flag
-
+            #If you keprint pa.User.UserIDep seeing the body say that you will record and send Flag
+            print pa.User.UserID
             if self.SaidIt==False and self.SawIt== True:
                 #self.pepper_say.publish("Hello, would you like to do some exercise?")
                 self.pepper_say.publish("One")
@@ -60,14 +66,18 @@ class PepperOrbbec():
                 #self.pepper_say.publish("Please, have a sit")
                 time.sleep(4)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
-                self.record.publish(True)
+                #Send customized message
+                self.User.Flag = True
+                self.record.publish(self.User)
+
                 self.pepper_say.publish("Recording")
                 time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
             elif self.SaidIt == True and self.SawIt== False:
                 self.pepper_say.publish("Doo")
                 time.sleep(4)
-                self.record.publish(False)
+                self.User.Flag = False
+                self.record.publish(self.User)
                 self.pepper_say.publish("Doo hass")
                 time.sleep(4)
                 self.pepper_say.publish("Doo hass mish!")

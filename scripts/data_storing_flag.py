@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#YEAH
 import roslib #Ros libraries
 import rospy #Python library
 import tf #transform library
@@ -7,6 +6,7 @@ import rosbag #To store data
 import message_filters #To receive the data from Pepper and the camera at the same.
 import body_tracker_msgs.msg #Astra Orbbec messages ALL OF THEM BodyTracker & Skeleton check: https://github.com/shinselrobots/body_tracker_msgs/tree/master/msg
 import geometry_msgs.msg
+import user_msgs.msg# My personal messages
 from std_msgs.msg import Int32, String, Bool
 from time import gmtime, strftime # Library to get the date and time for data saving with ROSBAG
 import math
@@ -26,25 +26,26 @@ class tf_broadcaster():
 		#Subscriber 2 (Pepper Flag)
 		self.flag_sub = rospy.Subscriber(
 			"/pepper/flag",
-			Bool,
+			user_msgs.msg.UserData,
 			self.recordCallback) #Name // Type of message and Callback
 		self.counter = 0
-		self.Flag = False #To start recording
+		self.User = user_msgs.msg.UserData
+		self.User.Flag = False #To start recording
 #		self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
 #		self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
 
 	def positionCallback(self, data): #Function that is called when the Subscriber/listener receives data
 		br = tf.TransformBroadcaster() #tf object creation
 		Attributes = [
-			"joint_position_head",
-			"joint_position_neck",
+			#"joint_position_head",
+			#"joint_position_neck",
 			#"joint_position_shoulder", #Always 0 by default
 			"joint_position_spine_top",
 			"joint_position_spine_mid",
-			"joint_position_spine_bottom",
-			"joint_position_left_shoulder",
-			"joint_position_left_elbow",
-			"joint_position_left_hand",
+			#"joint_position_spine_bottom",
+			#"joint_position_left_shoulder",
+			#"joint_position_left_elbow",
+			#"joint_position_left_hand",
 			"joint_position_right_shoulder",
 			"joint_position_right_elbow",
 			"joint_position_right_hand"]
@@ -52,7 +53,7 @@ class tf_broadcaster():
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
-		if self.Flag:
+		if self.User.Flag:
 			Skel = body_tracker_msgs.msg.Skeleton #Object created from message type
 			Skel = data #Save BodyPOS data in Skel
 			self.bag.write("/body_tracker/skeleton",Skel) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
@@ -67,16 +68,19 @@ class tf_broadcaster():
 	# 		"camera")	#parent frame (Started being called "world" Coordinates [0 0 0])
 	# 	#rospy.loginfo("//%s X: %s Y: %s Z: %s",Attribute,getattr(getattr(BodyPOS,Attribute),"x"),getattr(getattr(BodyPOS,Attribute),"y"), getattr(getattr(BodyPOS,Attribute),"z")) #Keep track of values
 	def recordCallback(self, data):
-		self.Flag = data.data
-		if self.Flag == True:
+		#If the flag is True add 1 to the counter if now is False add another to the counter to close the ROSBAG
+		self.User = data.data
+		if self.User.Flag == True:
 			self.counter=self.counter+1
-		if self.Flag == False:
+		if self.User.Flag == False:
 			self.counter=self.counter+1
+
 	def control_loop(self):
 		while not rospy.is_shutdown():
-			if self.Flag==True:
-				self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
-				self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
+			if self.User.Flag==True:
+				#self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
+				self.BagName = self.User.UserID #Opening bag with the name associated with the USER
+				self.bag = rosbag.Bag(str(self.BagName) +".bag","a") # Make sure that you run the code in the directory in which you want to store the bag
 					#Read --> 'r' Write --> 'w' Append --> 'a (http://docs.ros.org/api/rosbag/html/python/)'
 				while  self.counter<2: #not rospy.is_shutdown() and
 					rospy.loginfo(self.counter)
