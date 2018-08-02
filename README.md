@@ -1,2 +1,2 @@
-# Msater-Dissertation
+# Master-Dissertation
 Robot exercise encouragement
