@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-import rospy
-import time
+import rospy #General stuff
+import time #To set ROSBAG timing
+import numpy #To change variables types
+import sys #To take argument from the main function (Terminal or launch file)
 from std_msgs.msg import String
 from std_msgs.msg import Int32
 from std_msgs.msg import Bool
@@ -37,9 +39,14 @@ class PepperOrbbec():
         self.body_status = 4 #Initialise body status with out of scope value
         self.SaidIt = False  #Falg to know if the "Main speech" was pronounced
         self.User = UserData()
-        self.User.UserID = 1#str(input("Please, enter you user ID: ")) # Enter the ID between " " symbols
+        self.User.UserID = numpy.int64(rospy.get_param('~ID'))#int64
         self.User.Flag = True # By default
-
+        self.User.Bag = str(rospy.get_param('~BagDetails')) #string
+        self.positionContainer = [
+        "position one",
+        "position two",
+        "position three"
+        ]
         #self.pepper_engagement.publish("disengage") #Disable awareness in pepper_say
         #time.sleep(4)
 
@@ -55,6 +62,7 @@ class PepperOrbbec():
         #If the body is lost say that it is out of sight
         if data.tracking_status < 3 and self.SawIt== True:
             self.SawIt= not self.SawIt #Swap flag
+            rospy.loginfo("ERROR: BODY LOST")
 
 
     def pepper_Orbbec(self):
@@ -63,35 +71,42 @@ class PepperOrbbec():
         # spin() simply keeps python from exiting until this node is stopped
         while not rospy.is_shutdown():
             #If you keprint pa.User.UserIDep seeing the body say that you will record and send Flag
-            print self.User.UserID
+            #print self.User.UserID
             print self.User.Flag
-            print type(self.User.UserID)
-            print type(self.User.Flag)
+            #print type(self.User.UserID)
+            #print type(self.User.Flag)
+            rospy.loginfo("argv[1] = %s and argv[2] = %s",numpy.int64(sys.argv[1]),str(sys.argv[2]))
             if self.SaidIt==False and self.SawIt== True:
                 #self.pepper_say.publish("Hello, would you like to do some exercise?")
                 ##self.pepper_say.publish("One")
+                print 1
                 #time.sleep(1)
-                print "True"
                 ##self.pepper_say.publish("Two")
                 #self.pepper_say.publish("Please, have a sit")
                 #time.sleep(4)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
+                #SHOW IMAGE OR EXAMPLE OF POSITION
+                self.exercise_loop(self.positionContainer[0],"New")
+                for position in self.positionContainer[1:]:
+                    self.exercise_loop(position,"Current")
+
 
                 #Send customized message
-                self.User.Flag = True
-                self.record.publish(self.User)
+                #self.User.Flag = self.SawIt
+                # self.record.publish(self.User)
 
-                self.pepper_say.publish("Recording")
+
+                # self.pepper_say.publish("Recording")
                 ##time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
 
             elif self.SaidIt == True and self.SawIt== False:
                 self.pepper_say.publish("Doo")
                 ##time.sleep(4)
-                print "False"
+                print 2
                 #Send customized message
-                self.User.Flag = False
-                self.record.publish(self.User)
+                #self.User.Flag = False
+                #self.record.publish(self.User)
 
                 ##self.pepper_say.publish("Doo hass")
                 ##time.sleep(4)
@@ -99,10 +114,29 @@ class PepperOrbbec():
                 ##time.sleep(2)
                 self.SaidIt= not self.SaidIt #Swap flag
             rate.sleep()
-
+    def exercise_loop(self,position,BagState):
+        #show IMAGE
+        print "Exercising"
+        self.User.Bag = BagState
+        self.pepper_say.publish("Please, move your armm to " + str(position))
+        #time.sleep(4)          #while not self.Sitted:
+        self.pepper_say.publish("Hold it a bit more, please")
+        self.User.Flag = True
+        self.record.publish(self.User)
+        time.sleep(1) #Duration of recording
+        self.User.Flag = False
+        self.record.publish(self.User)
+        self.pepper_say.publish("Release")
+        #time.sleep(4)
+        self.pepper_say.publish("Now let's go for the new position")
+        time.sleep(2)
 if __name__ == '__main__':
-
-    rospy.init_node('pepper_Orbbec', anonymous=True)
-    pa = PepperOrbbec()
-    pa.pepper_Orbbec()
-    rospy.spin()
+    if False: #Your length plus 1 (Includes the path to the file)
+        rospy.init_node('pepper_Orbbec', anonymous=True)
+        pa = PepperOrbbec()
+        pa.pepper_Orbbec()
+        rospy.spin()
+    else:
+        while 1:
+            rospy.loginfo("usage: Error introducing arguments")
+        #rospy.loginfo("%s",sys.argv)

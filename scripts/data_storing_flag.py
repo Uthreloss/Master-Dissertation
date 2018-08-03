@@ -32,6 +32,10 @@ class tf_broadcaster():
 		self.counter = 0
 		self.User = UserData()
 		self.User.Flag = False #To start recording
+		##Time variable need to be duration objects/type
+		self.WritingTime=rospy.Time.now() #Pointer to write in the right plaec in the ROSBAG
+		self.OpenBag = False # To know when to start writing
+		self.StartingWritingTime = rospy.Time.now()
 #		self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
 #		self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
 
@@ -54,10 +58,11 @@ class tf_broadcaster():
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
-		if self.User.Flag:
+		if self.User.Flag and self.OpenBag:
 			Skel = body_tracker_msgs.msg.Skeleton() #Object created from message type
 			Skel = data #Save BodyPOS data in Skel
-			self.bag.write("/body_tracker/skeleton",Skel) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
+			self.bag.write("/body_tracker/skeleton",Skel, rospy.Time.now() - self.WritingTime + self.StartingWritingTime) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
+			rospy.loginfo("recording")
 		#################################################
 
 	# def tfTransform(self,br,Attribute,BodyPOS):
@@ -70,7 +75,7 @@ class tf_broadcaster():
 	# 	#rospy.loginfo("//%s X: %s Y: %s Z: %s",Attribute,getattr(getattr(BodyPOS,Attribute),"x"),getattr(getattr(BodyPOS,Attribute),"y"), getattr(getattr(BodyPOS,Attribute),"z")) #Keep track of values
 	def recordCallback(self, data):
 		#If the flag is True add 1 to the counter if now is False add another to the counter to close the ROSBAG
-		print("receiving")
+		print("receiving: " + str(self.User.Flag))
 		self.User = data
 		if self.User.Flag == True:
 			self.counter=self.counter+1
@@ -82,12 +87,22 @@ class tf_broadcaster():
 			if self.User.Flag==True:
 				#self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
 				self.BagName = self.User.UserID #Opening bag with the name associated with the USER
-				self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
+				if self.User.Bag == "New":
+					self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
+					print "W"
+				else:
+					self.bag = rosbag.Bag(str(self.BagName) +".bag","a")
+					print "A"
+				self.WritingTime=rospy.Time.now() #Adapt time for the ROSBAG what out for delays!!!
+				self.OpenBag = True # The bag has been opened START WRITING!
+
 					#Read --> 'r' Write --> 'w' Append --> 'a (http://docs.ros.org/api/rosbag/html/python/)'
 				while  self.counter<2: #not rospy.is_shutdown() and
-					rospy.loginfo(self.counter)
+					z=1
+					#rospy.loginfo(self.counter)
 					#rospy.loginfo(self.Flag)
 				self.bag.close() #Close bag when Ctrl+C is pressed
+				self.StartingWritingTime = rospy.Time(self.bag.get_end_time()) #It needs to be a Duration object for ROS to interpret
 				self.counter=0
 
 if __name__ == '__main__': #Main function that calls other functions
