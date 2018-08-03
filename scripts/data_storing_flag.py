@@ -6,7 +6,7 @@ import rosbag #To store data
 import message_filters #To receive the data from Pepper and the camera at the same.
 import body_tracker_msgs.msg #Astra Orbbec messages ALL OF THEM BodyTracker & Skeleton check: https://github.com/shinselrobots/body_tracker_msgs/tree/master/msg
 import geometry_msgs.msg
-import user_msgs.msg# My personal messages
+from user_msgs.msg import UserData# My personal messages
 from std_msgs.msg import Int32, String, Bool
 from time import gmtime, strftime # Library to get the date and time for data saving with ROSBAG
 import math
@@ -25,11 +25,12 @@ class tf_broadcaster():
 
 		#Subscriber 2 (Pepper Flag)
 		self.flag_sub = rospy.Subscriber(
-			"/pepper/flag",
-			user_msgs.msg.UserData,
+			"/pepper/data",
+			UserData,
 			self.recordCallback) #Name // Type of message and Callback
+
 		self.counter = 0
-		self.User = user_msgs.msg.UserData
+		self.User = UserData()
 		self.User.Flag = False #To start recording
 #		self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
 #		self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
@@ -54,7 +55,7 @@ class tf_broadcaster():
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
 		if self.User.Flag:
-			Skel = body_tracker_msgs.msg.Skeleton #Object created from message type
+			Skel = body_tracker_msgs.msg.Skeleton() #Object created from message type
 			Skel = data #Save BodyPOS data in Skel
 			self.bag.write("/body_tracker/skeleton",Skel) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
 		#################################################
@@ -69,7 +70,8 @@ class tf_broadcaster():
 	# 	#rospy.loginfo("//%s X: %s Y: %s Z: %s",Attribute,getattr(getattr(BodyPOS,Attribute),"x"),getattr(getattr(BodyPOS,Attribute),"y"), getattr(getattr(BodyPOS,Attribute),"z")) #Keep track of values
 	def recordCallback(self, data):
 		#If the flag is True add 1 to the counter if now is False add another to the counter to close the ROSBAG
-		self.User = data.data
+		print("receiving")
+		self.User = data
 		if self.User.Flag == True:
 			self.counter=self.counter+1
 		if self.User.Flag == False:
@@ -80,7 +82,7 @@ class tf_broadcaster():
 			if self.User.Flag==True:
 				#self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
 				self.BagName = self.User.UserID #Opening bag with the name associated with the USER
-				self.bag = rosbag.Bag(str(self.BagName) +".bag","a") # Make sure that you run the code in the directory in which you want to store the bag
+				self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
 					#Read --> 'r' Write --> 'w' Append --> 'a (http://docs.ros.org/api/rosbag/html/python/)'
 				while  self.counter<2: #not rospy.is_shutdown() and
 					rospy.loginfo(self.counter)
