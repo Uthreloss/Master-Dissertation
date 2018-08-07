@@ -1,6 +1,8 @@
 <launch>
+  <!-- Variable to input on the teminal window -->
+    <arg name = "BagName" />
     <!-- ROSBAG play-->
-    <node pkg ="rosbag" type="play" name="rosbag" args="-l /home/pepper/catkin_ws/src/master_dissertation/3.bag"/>
+    <node pkg ="rosbag" type="play" name="rosbag" args="-l /home/pepper/catkin_ws/src/master_dissertation/experiment_bags/$(arg BagName).bag"/>
     <!-- Broadcast the Skeleton message into TF messages Node-->
     <node name="body_data_handling" pkg="master_dissertation" type="tf_broadcaster.py" respawn="true" >
     </node>
