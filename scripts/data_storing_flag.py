@@ -32,15 +32,15 @@ class tf_broadcaster():
 			self.recordCallback) #Name // Type of message and Callback
 
 		self.Attributes = [
-			#"joint_position_head",
-			#"joint_position_neck",
-			#"joint_position_shoulder", #Always 0 by default
+			"joint_position_head",
+			"joint_position_neck",
+			"joint_position_shoulder", #Always 0 by default
 			"joint_position_spine_top",
 			"joint_position_spine_mid",
-			#"joint_position_spine_bottom",
-			#"joint_position_left_shoulder",
-			#"joint_position_left_elbow",
-			#"joint_position_left_hand",
+			"joint_position_spine_bottom",
+			"joint_position_left_shoulder",
+			"joint_position_left_elbow",
+			"joint_position_left_hand",
 			"joint_position_right_shoulder",
 			"joint_position_right_elbow",
 			"joint_position_right_hand"]

@@ -42,7 +42,8 @@ class PepperOrbbec():
         self.args = rospy.myargv(argv=sys.argv)
         self.User.UserID = numpy.int64(self.args[1])#int64 ID of the User
         self.User.Flag = True # By default
-        self.User.Bag =  str(self.args[2]) #string BagStatus
+        #self.User.Bag =  str(self.args[2]) #string BagStatus
+        self.User.Bag =  "New"
         self.positionContainer = [
             "position one",
             "position two",
@@ -63,7 +64,7 @@ class PepperOrbbec():
 
         #Welcome the user once a body is detected
         if data.tracking_status == 3 and self.SawIt== False:
-            self.User.UserID = numpy.int64(data.body_id)*10 + self.User.UserID #The order is very important to make sure everything follow an order    self.SawIt= not self.SawIt #Swap flag
+            self.User.BodyID = numpy.int64(data.body_id) #In order not to record data from another detected body
             self.SawIt= not self.SawIt #Swap flag
         #If the body is lost say that it is out of sight
         if data.tracking_status < 3 and self.SawIt== True:
@@ -83,12 +84,14 @@ class PepperOrbbec():
             #print type(self.User.Flag)
             #rospy.loginfo("argv[1] = %s and argv[2] = %s",numpy.int64(self.args[1]),str(self.args[2]))
             if self.SaidIt==False and self.SawIt== True:
-                self.pepper_say.publish("Hello, would you like to do some exercise?")
+#Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
+                self.pepper_say.publish("Hello, welcome to the robot coaching program")
+                time.sleep(5)
+                self.pepper_say.publish("Would you like to do some exercise?")
                 ##self.pepper_say.publish("One")
-                print 1
                 time.sleep(4)
                 ##self.pepper_say.publish("Two")
-                self.pepper_say.publish("Please, have a sit")
+                self.pepper_say.publish("Please, have a seat")
                 time.sleep(6)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
                 #SHOW IMAGE OR EXAMPLE OF POSITION
@@ -96,8 +99,10 @@ class PepperOrbbec():
                 for idx, position in enumerate(self.positionContainer[1:]):
                     if self.SawIt == False:
                         break
+                    self.pepper_say.publish("Well done!") #Not for safeguard MODE
+                    time.sleep(3)
                     self.pepper_say.publish("Now, let's go for the new position")
-                    #########time.sleep(4)
+                    time.sleep(4)
                     self.exercise_loop(position,"Current",self.Position2Save[idx+1])
                     #########time.sleep(4)
 
@@ -113,9 +118,9 @@ class PepperOrbbec():
                 self.SaidIt= not self.SaidIt #Swap flag
 
             elif self.SaidIt == True and self.SawIt== False:
-                self.pepper_say.publish("Doo")
-                ##time.sleep(4)
-
+                self.pepper_say.publish("I do not see you")
+                time.sleep(4)
+		break
                 #Send customized message
                 #self.User.Flag = False
                 #self.record.publish(self.User)
@@ -129,7 +134,11 @@ class PepperOrbbec():
                 print "Finished!"
                 self.pepper_say.publish("Now we are done")
                 time.sleep(2)
-                self.pepper_say.publish("The exercise is over!")
+                self.pepper_say.publish("The exercise session is over!")
+                time.sleep(3)
+                self.pepper_say.publish("You did really well today!") # for the solitary MODE
+                time.sleep(3)
+		self.pepper_say.publish("Bye bye!")
                 time.sleep(2)
                 break
             rate.sleep()
@@ -140,17 +149,17 @@ class PepperOrbbec():
         self.User.Bag = BagState
         self.User.Pose = CurrentPosition
         self.pepper_say.publish("Please, move your arm to " + str(position))
-        time.sleep(5)          #while not self.Sitted:
-        self.pepper_say.publish("Hold it a bit more, please")
-        time.sleep(3) 
+        time.sleep(6)          #while not self.Sitted:
+        self.pepper_say.publish("Hold it a bit longer, please")
+        time.sleep(1) 
         self.User.Flag = True
         self.record.publish(self.User)
         time.sleep(1) #Duration of recording #ESSENTIAL DO NOT COMMET
         self.User.Flag = False
         self.record.publish(self.User)
         time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
-        self.pepper_say.publish("Release")
-        time.sleep(4)
+        self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
+        time.sleep(3)
 
 if __name__ == '__main__':
     # try: #Your length plus 1 (Includes the path to the file)
