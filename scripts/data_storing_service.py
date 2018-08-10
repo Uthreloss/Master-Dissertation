@@ -31,13 +31,11 @@ class data_storer():
 			"/pepper/data",
 			UserData,
 			self.recordCallback) #Name // Type of message and Callback
-
+		#Service for writing data in bag and txt files
 		self.service = rospy.Service(
 			"recorder",
 			UserService,
-			self.control_loop
-
-		)
+			self.control_loop)
 
 		self.Attributes = [
 			"joint_position_head",
@@ -56,16 +54,14 @@ class data_storer():
 		self.rospack = rospkg.RosPack()
 		self.BagPath = self.rospack.get_path('master_dissertation') +"/experiment_bags/" #Where the bag are saved
 		self.counter = 0
-		self.User = UserData()
+		self.User = UserData() #Object for User data
 		self.User.Flag = False #To start recording
 		##Time variable need to be duration objects/type
 		self.WritingTime=rospy.Time.now() #Pointer to write in the right plaec in the ROSBAG
 		self.OpenBag = False # To know when to start writing
 		self.StartingWritingTime = rospy.Time.now()
-		self.WritingFlag = False
+		self.WritingFlag = False #To know if the files are being written
 
-#		self.BagName = strftime("%Y-%m-%d %H:%M:%S", gmtime()) #Opening bag with the name associated ith the date
-#		self.bag = rosbag.Bag(str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
 
 	def positionCallback(self, data): #Function that is called when the Subscriber/listener receives data
 		br = tf.TransformBroadcaster() #tf object creation
@@ -74,7 +70,7 @@ class data_storer():
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
-		if self.OpenBag:# and data.body_id == numpy.int64(self.User.Flag/10): for 2 bodies detection avoidance
+		if self.OpenBag and data.body_id == self.User.BodyID: #for 2 bodies detection avoidance
 			self.WritingFlag = True
 			Skel = body_tracker_msgs.msg.Skeleton() #Object created from message type
 			Skel = data #Save BodyPOS data in Skel
@@ -106,21 +102,26 @@ class data_storer():
 			print self.counter
 
 	def control_loop(self,req):
-		self.BagName = req.UserID #Opening bag with the name associated with the USER
-		if req.Bag == "New":
-			self.bag = rosbag.Bag(self.BagPath + str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
-			self.text = open(self.BagPath + str(self.BagName) + req.Pose +".txt","w") #Create a text file too
-			self.text.writelines("%s\t" % position for position in self.Attributes) #Self explanatory line at the beginning of the text
-			self.text.write("\n")
-			self.text.write("XYZ order\n")
+		#self.BagName = req.UserID #Opening bag with the name associated with the USER
+		self.User.BodyID = req.BodyID # Save the body that we want to record
+		#Bag opening and writing
+		time.sleep(1)
+		if req.BagState == "New":
+			#self.bag = rosbag.Bag(self.BagPath + str(self.BagName) +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
+			#self.text = open(self.BagPath + str(self.BagName) + req.Pose +".txt","w") #Create a text file too
+			self.bag = rosbag.Bag(req.BagPath +".bag","w") # Make sure that you run the code in the directory in which you want to store the bag
 			print "W"
 		else:
-			self.bag = rosbag.Bag(self.BagPath + str(self.BagName) +".bag","a")
-			self.text = open(self.BagPath + str(self.BagName) + req.Pose +".txt","w")
-			self.text.writelines("%s\t" % position for position in self.Attributes) #Self explanatory line at the beginning of the text
-			self.text.write("\n")
-			self.text.write("XYZ order\n")
+			#self.bag = rosbag.Bag(self.BagPath + str(self.BagName) +".bag","a")
+			#self.text = open(self.BagPath + str(self.BagName) + req.Pose +".txt","w")
+			self.bag = rosbag.Bag(req.BagPath +".bag","a") # Make sure that you run the code in the directory in which you want to store the bag
 			print "A"
+
+		#Txt opening and writing
+		self.text = open(req.WholePath +".txt","w") #Create a text file too
+		self.text.writelines("%s\t" % position for position in self.Attributes) #Self explanatory line at the beginning of the text
+		self.text.write("\n")
+		self.text.write("XYZ order\n")
 		self.WritingTime=rospy.Time.now() #Adapt time for the ROSBAG what out for delays!!!
 		self.OpenBag = True # The bag has been opened START WRITING!
 

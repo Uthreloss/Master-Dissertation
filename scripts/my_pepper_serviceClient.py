@@ -3,13 +3,14 @@ import rospy #General stuff
 import time #To set ROSBAG timing
 import numpy #To change variables types
 import sys #To take argument from the main function (Terminal or launch file)
+import os # To create diretories using os.mkdir(path)
 from std_msgs.msg import String
 from std_msgs.msg import Int32
 from std_msgs.msg import Bool
 from user_msgs.msg import UserData #Essential to avoid problems in message instantiation and subscriber reception
 from user_srv.srv import *# My personal service
 import body_tracker_msgs.msg #Astra Orbbec messages ALL OF THEM BodyTracker & Skeleton check: https://github.com/shinselrobots/body_tracker_msgs/tree/master/msg
-
+import rospkg #To get the path of the Robag directory in the package
 
 class PepperOrbbec():
 
@@ -36,6 +37,9 @@ class PepperOrbbec():
             "/body_tracker/skeleton",
             body_tracker_msgs.msg.Skeleton,
             self.position_Callback) #Name // Type of message and Callback
+
+        self.rospack = rospkg.RosPack()
+        self.RepoPath = self.rospack.get_path('master_dissertation') +"/experiment_bags/" #Where the bag are saved
         self.SawIt = False #Flag to know that a person is being tracked
         self.body_status = 4 #Initialise body status with out of scope value
         self.SaidIt = False  #Falg to know if the "Main speech" was pronounced
@@ -44,19 +48,30 @@ class PepperOrbbec():
         self.User.UserID = numpy.int64(self.args[1])#int64 ID of the User
         self.User.Flag = True # By default
         #self.User.Bag =  str(self.args[2]) #string BagStatus
-        self.User.Bag =  "New"
+        self.User.Bag = "New"
         self.positionContainer = [
             "position one",
             "position two",
             "position three"
         ]
-        self.Position2Save = [
-            "P1",
-            "P2",
-            "P3"
+        self.setContainer = [
+            "set one",
+            "set two",
+            "set three",
+            "set four"
         ]
-        #self.pepper_engagement.publish("disengage") #Disable awareness in pepper_say
-        #time.sleep(4)
+        self.ItContainer = [
+            "repetition one",
+            "repetition two",
+            "repetition three",
+            "repetition four",
+            "repetition five",
+            "repetition six",
+        ]
+        self.PositionRange = 3
+        self.Set = 2
+        self.ItRange = 6
+        self.RobotBehaviour = "solitary"
 
     def position_Callback(self, data):
         self.body_status = data.tracking_status # Update state
@@ -78,98 +93,75 @@ class PepperOrbbec():
         rate = rospy.Rate(10)
         # spin() simply keeps python from exiting until this node is stopped
         while not rospy.is_shutdown():
-            #If you keprint pa.User.UserIDep seeing the body say that you will record and send Flag
-            #print self.User.UserID
             print self.User.Flag
-            #print type(self.User.UserID)
-            #print type(self.User.Flag)
-            #rospy.loginfo("argv[1] = %s and argv[2] = %s",numpy.int64(self.args[1]),str(self.args[2]))
             if self.SaidIt==False and self.SawIt== True:
-#Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
+            #Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
                 self.pepper_say.publish("Hello, welcome to the robot coaching program")
-                #########THIStime.sleep(5)
+                ####time.sleep(5)
                 self.pepper_say.publish("Would you like to do some exercise?")
                 ##self.pepper_say.publish("One")
-                #########THIStime.sleep(4)
+                ####time.sleep(4)
                 ##self.pepper_say.publish("Two")
                 self.pepper_say.publish("Please, have a seat")
-                #########THIStime.sleep(6)          #while not self.Sitted:
+                ####time.sleep(6)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
-                #SHOW IMAGE OR EXAMPLE OF POSITION
-                self.exercise_loop_client(self.positionContainer[0],"New",self.Position2Save[0])
-                for idx, position in enumerate(self.positionContainer[1:]):
-                    if self.SawIt == False:
-                        break
-                    self.pepper_say.publish("Well done!") #Not for safeguard MODE
-                    #########THIStime.sleep(3)
-                    self.pepper_say.publish("Now, let's go for the new position")
-                    #########THIStime.sleep(4)
-                    self.exercise_loop_client(position,"Current",self.Position2Save[idx+1])
-                    #########time.sleep(4)
-
-
-
-                #Send customized message
-                #self.User.Flag = self.SawIt
-                # self.record.publish(self.User)
-
-
-                # self.pepper_say.publish("Recording")
-                ##time.sleep(4)
+                for iteration in range(self.ItRange):
+                    if iteration == 0:
+                        self.pepper_say.publish("We will start with repetition " + self.ItContainer[iteration])
+                        ####time.sleep(4)          #while not self.Sitted:
+                    else:
+                        self.pepper_say.publish("Now we will do repetition " + self.ItContainer[iteration])
+                        self.User.Bag = "Current"
+                        ####time.sleep(4)          #while not self.Sitted:
+                    #SHOW IMAGE OR EXAMPLE OF POSITION
+                    self.exercise_loop_client(self.positionContainer[0],self.User.Bag,1,self.Set,str(iteration + 1))
+                    for posIdx, position in enumerate(self.positionContainer[1:]):
+                        if self.SawIt == False:
+                            break
+                        self.pepper_say.publish("Well done!") #Not for safeguard MODE
+                        ####time.sleep(3)
+                        self.pepper_say.publish("Now, let's go for the new position")
+                        ####time.sleep(4)
+                        self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1))
+                        #########time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
 
             elif self.SaidIt == True and self.SawIt== False:
                 self.pepper_say.publish("I do not see you")
                 time.sleep(4)
-		break
-                #Send customized message
-                #self.User.Flag = False
-                #self.record.publish(self.User)
-
-                ##self.pepper_say.publish("Doo hass")
-                ##time.sleep(4)
-                ##self.pepper_say.publish("Doo hass mish!")
-                ##time.sleep(2)
                 self.SaidIt= not self.SaidIt #Swap flag
+
             elif self.SaidIt == True and self.SawIt== True:
                 print "Finished!"
                 self.pepper_say.publish("Now we are done")
-                #########THIStime.sleep(2)
+                time.sleep(2)
                 self.pepper_say.publish("The exercise session is over!")
-                #########THIStime.sleep(3)
+                time.sleep(3)
                 self.pepper_say.publish("You did really well today!") # for the solitary MODE
-                #########THIStime.sleep(3)
-		self.pepper_say.publish("Bye bye!")
-                #########THIStime.sleep(2)
+                time.sleep(3)
+                self.pepper_say.publish("Bye bye!")
+                time.sleep(2)
                 break
             rate.sleep()
 
-    def exercise_loop_client(self,position,BagState,CurrentPosition):
+    def exercise_loop_client(self,position,BagState,CurrentPosition,setNumber,ItNumber): #Service callback
         #show IMAGE
         print "Exercising"
-        self.User.Bag = BagState
-        self.User.Pose = CurrentPosition
         self.pepper_say.publish("Please, move your arm to " + str(position))
-        #########THIStime.sleep(6)          #while not self.Sitted:
+        ####time.sleep(6)          #while not self.Sitted:
         self.pepper_say.publish("Hold it a bit longer, please")
-        #########THIStime.sleep(1)
+        ####time.sleep(1)
         rospy.wait_for_service('recorder')
         try:
             recorder_service = rospy.ServiceProxy('recorder', UserService)
-            reply = recorder_service(self.User.UserID,self.User.BodyID,self.User.Bag,self.User.Pose)
-            #reply.status
+            BagPath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(setNumber)
+            WholePath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(setNumber) + "/P_" + str(CurrentPosition) + "/P_" + str(CurrentPosition) + "_" + str(ItNumber)
+            reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-        while not reply.Status:
-            print "YEAH"
-        #self.User.Flag = True
-        #self.record.publish(self.User)
-        #time.sleep(1) #Duration of recording #ESSENTIAL DO NOT COMMET
-        #self.User.Flag = False
-        #self.record.publish(self.User)
-        #########THIStime.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+        ####time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
-        #########THIStime.sleep(3)
+        ####time.sleep(3)
 
 if __name__ == '__main__':
     # try: #Your length plus 1 (Includes the path to the file)
