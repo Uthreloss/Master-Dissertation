@@ -80,7 +80,7 @@ class PepperOrbbec():
         "https://i.imgur.com/4uIiVzM.png"
         ]
         self.PositionRange = 3
-        self.ItRange = 2
+        self.ItRange = 1
         self.RobotBehaviour = "solitary"
 
     def position_Callback(self, data):
@@ -117,10 +117,10 @@ class PepperOrbbec():
                 #input("Press Enter when the person is sitted")
                 for iteration in range(self.ItRange):
                     if iteration == 0:
-                        self.pepper_say.publish("We will start with repetition " + self.ItContainer[iteration])
+                        self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
                         time.sleep(4)          #while not self.Sitted:
                     else:
-                        self.pepper_say.publish("Now we will do repetition " + self.ItContainer[iteration])
+                        self.pepper_say.publish("Now we will do " + self.ItContainer[iteration])
                         self.User.Bag = "Current"
                         time.sleep(4)          #while not self.Sitted:
                     #SHOW IMAGE OR EXAMPLE OF POSITION

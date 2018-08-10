@@ -5,9 +5,9 @@
   </node>
 
     <!-- Pepper Code Node-->
-    <arg name = "ID" />
-    <!--arg name = "BagStatus" /-->
-    <node name ="pepper_Orbbec" pkg="master_dissertation" type="my_pepper_serviceClient.py" respawn="false" output="screen" args = "$(arg ID)" > <!--$(arg BagStatus)" -->
+    <arg name = "set" />
+    <arg name = "participant" />
+    <node name ="pepper_Orbbec" pkg="master_dissertation" type="my_pepper_serviceClient.py" respawn="false" output="screen" args = "$(arg participant) $(arg set)">
     </node>
 
 
