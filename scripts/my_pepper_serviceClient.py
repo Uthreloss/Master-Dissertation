@@ -30,6 +30,11 @@ class PepperOrbbec():
         self.pepper_engagement = rospy.Publisher('pepper/cmd',
             String,
             queue_size=10)
+        #Publish pepper images on Tablet
+        self.pepper_display = rospy.Publisher('pepper/display',
+            String,
+            queue_size=10)
+
         # rostopic pub /pepper/c std_msgs/String "disengage" #onthe command line
 
         #Subscriber for the camera detector
@@ -46,6 +51,7 @@ class PepperOrbbec():
         self.User = UserData()
         self.args = rospy.myargv(argv=sys.argv)
         self.User.UserID = numpy.int64(self.args[1])#int64 ID of the User
+        self.Set= numpy.int64(self.args[2])#int64 ID of the User
         self.User.Flag = True # By default
         #self.User.Bag =  str(self.args[2]) #string BagStatus
         self.User.Bag = "New"
@@ -68,9 +74,13 @@ class PepperOrbbec():
             "repetition five",
             "repetition six",
         ]
+        self.ImageContainer = [
+        "https://i.imgur.com/KAYWRvM.png",
+        "https://i.imgur.com/76QdQpr.png",
+        "https://i.imgur.com/4uIiVzM.png"
+        ]
         self.PositionRange = 3
-        self.Set = 2
-        self.ItRange = 6
+        self.ItRange = 2
         self.RobotBehaviour = "solitary"
 
     def position_Callback(self, data):
@@ -97,31 +107,31 @@ class PepperOrbbec():
             if self.SaidIt==False and self.SawIt== True:
             #Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
                 self.pepper_say.publish("Hello, welcome to the robot coaching program")
-                ####time.sleep(5)
+                time.sleep(5)
                 self.pepper_say.publish("Would you like to do some exercise?")
                 ##self.pepper_say.publish("One")
-                ####time.sleep(4)
+                time.sleep(4)
                 ##self.pepper_say.publish("Two")
                 self.pepper_say.publish("Please, have a seat")
-                ####time.sleep(6)          #while not self.Sitted:
+                time.sleep(6)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
                 for iteration in range(self.ItRange):
                     if iteration == 0:
                         self.pepper_say.publish("We will start with repetition " + self.ItContainer[iteration])
-                        ####time.sleep(4)          #while not self.Sitted:
+                        time.sleep(4)          #while not self.Sitted:
                     else:
                         self.pepper_say.publish("Now we will do repetition " + self.ItContainer[iteration])
                         self.User.Bag = "Current"
-                        ####time.sleep(4)          #while not self.Sitted:
+                        time.sleep(4)          #while not self.Sitted:
                     #SHOW IMAGE OR EXAMPLE OF POSITION
                     self.exercise_loop_client(self.positionContainer[0],self.User.Bag,1,self.Set,str(iteration + 1))
                     for posIdx, position in enumerate(self.positionContainer[1:]):
                         if self.SawIt == False:
                             break
                         self.pepper_say.publish("Well done!") #Not for safeguard MODE
-                        ####time.sleep(3)
+                        time.sleep(3)
                         self.pepper_say.publish("Now, let's go for the new position")
-                        ####time.sleep(4)
+                        time.sleep(4)
                         self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1))
                         #########time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
@@ -147,10 +157,11 @@ class PepperOrbbec():
     def exercise_loop_client(self,position,BagState,CurrentPosition,setNumber,ItNumber): #Service callback
         #show IMAGE
         print "Exercising"
+        self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
         self.pepper_say.publish("Please, move your arm to " + str(position))
-        ####time.sleep(6)          #while not self.Sitted:
+        time.sleep(6)          #while not self.Sitted:
         self.pepper_say.publish("Hold it a bit longer, please")
-        ####time.sleep(1)
+        time.sleep(1)
         rospy.wait_for_service('recorder')
         try:
             recorder_service = rospy.ServiceProxy('recorder', UserService)
@@ -159,9 +170,10 @@ class PepperOrbbec():
             reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-        ####time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+        time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
-        ####time.sleep(3)
+        time.sleep(3)
+        self.pepper_display.publish("hide")
 
 if __name__ == '__main__':
     # try: #Your length plus 1 (Includes the path to the file)
