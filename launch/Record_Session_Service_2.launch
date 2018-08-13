@@ -8,7 +8,7 @@
     <arg name = "set" />
     <arg name = "participant" />
     <arg name = "mode" />
-    <node name ="pepper_Orbbec" pkg="master_dissertation" type="my_pepper_serviceClient.py" respawn="false" output="screen" args = "$(arg participant) $(arg set) $(arg mode)">
+    <node name ="pepper_Orbbec" pkg="master_dissertation" type="my_pepper_serviceClient_2.py" respawn="false" output="screen" args = "$(arg participant) $(arg set) $(arg mode)">
     </node>
 
 

@@ -54,10 +54,11 @@ class PepperOrbbec():
         self.User.UserID = numpy.int64(self.args[1])#int64 ID of the User
         self.Set = numpy.int64(self.args[2])#int64 ID of the User
         self.User.Flag = True # By default
-        self.Mode = str(args[3]) # the option are "notalive" and "alive"
+        self.Mode = str(self.args[3]) # the option are "notalive" and "alive"
         self.Pace = "slow" #This variable serves to ease the data collection once the user has familiarised with the positions
         #Just in case that the input is
-        if self.Mode != "notalive" or self.Mode != "alive":
+        print self.Mode
+        if self.Mode != "notalive" and self.Mode != "alive":
             print "MODE ERROR: Not properly written: " + str(self.Mode)
             self.Mode = "alive"
             print "Changed to: alive"
@@ -103,7 +104,6 @@ class PepperOrbbec():
         ]
         self.PositionRange = 3
         self.ItRange = 1
-        self.RobotBehaviour = "solitary"
 
     def position_Callback(self, data):
         self.body_status = data.tracking_status # Update state
@@ -192,7 +192,7 @@ class PepperOrbbec():
                             break
                         self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
                         time.sleep(3)
-                        if self.Pace == "slow"
+                        if self.Pace == "slow":
                             self.pepper_say.publish("Now, let's go for the new position")
                             time.sleep(4)
                         else:
@@ -225,11 +225,12 @@ class PepperOrbbec():
                 #self.pepper_engagement.publish("off")
                 break
             rate.sleep()
-
+        self.pepper_display.publish("hide")
+        self.pepper_engagement.publish("alive")
     def exercise_loop_client(self,position,BagState,CurrentPosition,setNumber,ItNumber,Speed): #Service callback
         #show IMAGE
         print "Exercising"
-        if Speed == "slow"
+        if Speed == "slow":
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish("Please, move your arm to " + str(position))
             time.sleep(6)          #while not self.Sitted:
@@ -259,6 +260,7 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
+        # pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_Orbbec()
         rospy.spin()
     # except:
