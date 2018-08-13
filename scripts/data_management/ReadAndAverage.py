@@ -3,12 +3,13 @@ import numpy as np
 #This function return the average of TXT files in a new txt file
 
 #Core variables
-itNumber = 6 #Number of iterations
-Positions = 3
-Participants = 10
-Set = 4
+itNumber = 6 #Number of iterations (default = 6)
+Positions = 3 # Default = 3
+Participants = 1 # Default = 10
+Sets = 2 # Default = 4
+Master_Diss_Path = "/home/pepper/catkin_ws/src"
 #Read the first document to get number of columns
-with open("/home/pepper/catkin_ws/src/master_dissertation/experiment_bags/participant_1/set_1/P_1/P_1_1.txt") as f:
+with open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_1/set_1/P_1/P_1_1.txt") as f:
     file = f.read()
 fileS = file.split('\n') #Rows
 data = fileS[2:-1]
@@ -20,7 +21,7 @@ for p in range(Participants):
         for w in range(Positions):
             for z in range(itNumber):
                 #                                                                                       Participant            Set                       Position Number            Iteration
-                with open("/home/pepper/catkin_ws/src/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_" + str(z+1) + ".txt") as f:
+                with open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_" + str(z+1) + ".txt") as f:
                     fileX = f.read()
                 fileS = fileX.split('\n') #Separate rows
                 data = fileS[2:-1]
@@ -47,8 +48,8 @@ for p in range(Participants):
         #Copy AND Paste
 
             #Open any old document to copy the first two lines
-            old_text = open("/home/pepper/catkin_ws/src/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_" + str(z+1) + ".txt","r") #Create a text file too
-            text = open("/home/pepper/catkin_ws/src/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "_Avs.txt","w") #Create a text file too
+            old_text = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_" + str(z+1) + ".txt","r") #Create a text file too
+            text = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "_Av.txt","w") #Create a text file too
             copy = False
             #Paste first two lines
             for idx, line in enumerate(old_text):
@@ -59,5 +60,5 @@ for p in range(Participants):
                 for j in range(elements):
                     text.write("%f,%f,%f\t" % (file_text[i][j*3], file_text[i][j*3+1], file_text[i][j*3+2]))
                 text.write("\n")
-
-
+            old_text.close()
+            text.close()
