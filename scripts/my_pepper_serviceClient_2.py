@@ -103,7 +103,7 @@ class PepperOrbbec():
         "https://i.imgur.com/uO0jPfh.png"
         ]
         self.PositionRange = 3
-        self.ItRange = 6
+        self.ItRange = 1
 
     def position_Callback(self, data):
         self.body_status = data.tracking_status # Update state
@@ -219,7 +219,7 @@ class PepperOrbbec():
 
             elif self.SaidIt == True and self.SawIt== False:
                 self.pepper_say.publish("I do not see you")
-                time.sleep(4)
+                time.sleep(2)
                 self.pepper_say.publish("Could you please call Daniel?")
                 time.sleep(4)
                 break
@@ -233,10 +233,9 @@ class PepperOrbbec():
                     if self.Mode == "alive":
                         self.pepper_say.publish("Your work was really good!") # for the solitary MODE
                         time.sleep(3)
-
                     self.pepper_say.publish("It's time for a break!")
-             		time.sleep(2)
-             		self.pepper_say.publish("Could you, please, call Daniel?")
+                    time.sleep(2)
+                    self.pepper_say.publish("Could you, please, call Daniel?")
                     time.sleep(4)
                 else:
                     self.pepper_say.publish("Now we are done")
@@ -245,8 +244,8 @@ class PepperOrbbec():
                     time.sleep(2)
 
                     if self.Mode == "alive":
-                    self.pepper_say.publish("You did really well today!") # for the solitary MODE
-                    time.sleep(3)
+                        self.pepper_say.publish("You did really well today!") # for the solitary MODE
+                        time.sleep(3)
 
                     self.pepper_say.publish("Could you, please, fill in the questionnaires?")
                     time.sleep(3)
@@ -273,7 +272,7 @@ class PepperOrbbec():
         else: #A bit quicker
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
-            time.sleep(3)          #while not self.Sitted:
+            time.sleep(2)          #while not self.Sitted:
             self.pepper_say.publish("Stay put")
             time.sleep(1)
         rospy.wait_for_service('recorder')
@@ -300,7 +299,7 @@ if __name__ == '__main__':
 	time.sleep(1)
         pa.pepper_engagement.publish("dialogoff")
 	time.sleep(1)
-        pa.pepper_engagement.publish("disengage")
+        pa.pepper_engagement.publish("hearingoff")
 	time.sleep(1)
         pa.pepper_Orbbec()
         rospy.spin()
