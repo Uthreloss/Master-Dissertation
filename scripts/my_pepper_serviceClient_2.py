@@ -180,7 +180,7 @@ class PepperOrbbec():
                         self.User.Bag = "Current"
                         time.sleep(3)         
                     self.pepper_say.publish("Are you ready?")
-                    time.sleep(4)         
+                    time.sleep(3)         
                     self.pepper_say.publish("Let's go!")
                     time.sleep(1) 
 				
@@ -243,7 +243,7 @@ class PepperOrbbec():
                 time.sleep(4)
                 #self.pepper_say.publish("I will now go to sleep")
                 #time.sleep(2)
-		self.pepper_engagement.publish("alive")
+		#self.pepper_engagement.publish("alive")
                 #self.pepper_engagement.publish("off")
                 break
 
@@ -258,7 +258,7 @@ class PepperOrbbec():
             self.pepper_say.publish("Please, move your arm to " + str(position))
             time.sleep(6)          #while not self.Sitted:
             self.pepper_say.publish("Hold it a bit longer, please")
-            time.sleep(1)
+            time.sleep(2)
         else: #A bit quicker
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
@@ -273,7 +273,7 @@ class PepperOrbbec():
             reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-        time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+        #time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
         time.sleep(2)
         self.pepper_display.publish("hide")
