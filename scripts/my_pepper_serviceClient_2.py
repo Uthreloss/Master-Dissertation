@@ -253,9 +253,9 @@ class PepperOrbbec():
             reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-        #time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+        time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
-        time.sleep(2)
+        ########time.sleep(2)
         self.pepper_display.publish("hide")
 
 if __name__ == '__main__':
