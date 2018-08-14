@@ -231,7 +231,7 @@ class PepperOrbbec():
                     self.pepper_say.publish("We are done with sequence one")
                     time.sleep(2)
                     if self.Mode == "alive":
-                        self.pepper_say.publish("Your work was really good") # for the solitary MODE
+                        self.pepper_say.publish("Your work was really good!") # for the solitary MODE
                         time.sleep(3)
 
                     self.pepper_say.publish("It's time for a break!")
