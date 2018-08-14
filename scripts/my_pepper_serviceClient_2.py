@@ -98,9 +98,9 @@ class PepperOrbbec():
             "set six",
         ]
         self.ImageContainer = [
-        "https://i.imgur.com/KAYWRvM.png",
-        "https://i.imgur.com/76QdQpr.png",
-        "https://i.imgur.com/4uIiVzM.png"
+        "https://i.imgur.com/S3WCMWd.png",
+        "https://i.imgur.com/o5tEwm1.png",
+        "https://i.imgur.com/uO0jPfh.png"
         ]
         self.PositionRange = 3
         self.ItRange = 6
@@ -156,8 +156,6 @@ class PepperOrbbec():
                     time.sleep(1)
                     self.pepper_say.publish("Hello")
                     time.sleep(2)
-                    self.pepper_say.publish("I hope you could rest")
-                    time.sleep(4)
                     self.pepper_say.publish("Are you ready for another round?")
                     ##self.pepper_say.publish("One")
                     time.sleep(4)
@@ -200,8 +198,8 @@ class PepperOrbbec():
 
                         if self.SawIt == False:
                             break
-
-                        self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
+                        if self.Mode == "alive":
+                            self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
                         time.sleep(3)
                         if self.Pace == "slow":
                             self.pepper_say.publish("Let's now go for the new position")
@@ -229,12 +227,16 @@ class PepperOrbbec():
 
             elif self.SaidIt == True and self.SawIt== True:
                 print "Finished!"
+
                 self.pepper_say.publish("Now we are done")
                 time.sleep(2)
                 self.pepper_say.publish("The exercise session is over")
                 time.sleep(2)
-                self.pepper_say.publish("You did really well today!") # for the solitary MODE
-                time.sleep(3)
+
+                if self.Mode == "alive":
+                    self.pepper_say.publish("You did really well today!") # for the solitary MODE
+                    time.sleep(3)
+
                 self.pepper_say.publish("Could you, please, fill in the questionnaires?")
  		time.sleep(3)
  		self.pepper_say.publish("They are on the table next to you")
@@ -244,6 +246,7 @@ class PepperOrbbec():
 		self.pepper_engagement.publish("alive")
                 #self.pepper_engagement.publish("off")
                 break
+
             rate.sleep()
         #self.pepper_display.publish("hide")
         #self.pepper_engagement.publish("alive")
@@ -281,7 +284,8 @@ if __name__ == '__main__':
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
 	time.sleep(3)
-        pa.pepper_engagement.publish(pa.Mode)
+        #pa.pepper_engagement.publish(pa.Mode)
+        pa.pepper_engagement.publish("alive")
 	time.sleep(1)
         pa.pepper_engagement.publish("dialogoff")
 	time.sleep(1)
