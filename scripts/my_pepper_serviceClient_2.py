@@ -66,15 +66,15 @@ class PepperOrbbec():
         self.engagement_comments = [
             "Well done!",
             "That's it!",
-            "Nicely performed!",
-            "Yes, keep it up!",
+            "Nicely performed",
+            "Keep it up",
             "Good job!",
             "Good work!",
             "That is splendid!",
             "You are doing vey well!",
             "Lovely!",
             "Brilliant!",
-            "Good going!",
+            "Kepp going!",
             "Triple a!",
             "Yes, that's it"
         ]
@@ -130,12 +130,12 @@ class PepperOrbbec():
             #Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
                 #self.pepper_engagement.publish(self.Mode)
                 if (self.Set == 1 or self.Set == 3) and self.Mode == "alive":
-                    ########time.sleep(1)
+                    time.sleep(1)
                     self.pepper_say.publish("Hello, welcome to the robot coaching program")
-                    ########time.sleep(5)
+                    time.sleep(5)
                     self.pepper_say.publish("Would you like to do some exercise?")
                     ##self.pepper_say.publish("One")
-                    ########time.sleep(4)
+                    time.sleep(4)
                 elif (self.Set == 2 or self.Set == 4) and self.Mode == "alive":
                     time.sleep(1)
                     self.pepper_say.publish("Hello, again!")
@@ -170,36 +170,53 @@ class PepperOrbbec():
                     time.sleep(4)
                     break
                 ##self.pepper_say.publish("Two")
-                self.pepper_say.publish("Please, have a seat")
-                ########time.sleep(6)          #while not self.Sitted:
+                self.pepper_say.publish("Please, remain sitted for the rest of the session")
+                time.sleep(6)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
                 for iteration in range(self.ItRange):
                     if iteration == 0:
                         self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
-                        ########time.sleep(4)          #while not self.Sitted:
+                        time.sleep(3)          #while not self.Sitted:
                     else:
                         self.pepper_say.publish("Now we will do " + self.ItContainer[iteration])
                         self.User.Bag = "Current"
-                        ########time.sleep(4)          #while not self.Sitted:
+                        time.sleep(3)         
+                    self.pepper_say.publish("Are you ready?")
+                    time.sleep(4)         
+                    self.pepper_say.publish("Let's go!")
+                    time.sleep(1) 
+				
                     #SHOW IMAGE OR EXAMPLE OF POSITION
                     if iteration < 1: #<3
                         self.Pace = "slow"
                     else:
                         self.Pace = "quick"
+
+                    if self.SawIt == False:
+                        break
+
                     self.exercise_loop_client(self.positionContainer[0],self.User.Bag,1,self.Set,str(iteration + 1),self.Pace)
                     for posIdx, position in enumerate(self.positionContainer[1:]):
+
                         if self.SawIt == False:
                             break
+
                         self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
-                        ########time.sleep(3)
+                        time.sleep(3)
                         if self.Pace == "slow":
-                            self.pepper_say.publish("Now, let's go for the new position")
-                            ########time.sleep(4)
+                            self.pepper_say.publish("Let's now go for the new position")
+                            time.sleep(1)
+                            self.pepper_say.publish("Don't we?")
+                            time.sleep(3)
                         else:
-                            self.pepper_say.publish("Keep going!")
-                            ########time.sleep(2)
+                            self.pepper_say.publish("Next one")
+                            time.sleep(1)
                         self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1),self.Pace)
-                        #########time.sleep(4)
+                        ####time.sleep(4)
+
+                    if self.SawIt == False:
+                        break
+
                 self.SaidIt= not self.SaidIt #Swap flag
 
             elif self.SaidIt == True and self.SawIt== False:
@@ -236,13 +253,13 @@ class PepperOrbbec():
         if Speed == "slow":
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish("Please, move your arm to " + str(position))
-            ########time.sleep(6)          #while not self.Sitted:
+            time.sleep(6)          #while not self.Sitted:
             self.pepper_say.publish("Hold it a bit longer, please")
-            ########time.sleep(1)
+            time.sleep(1)
         else: #A bit quicker
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
-            ########time.sleep(3)          #while not self.Sitted:
+            time.sleep(3)          #while not self.Sitted:
             self.pepper_say.publish("Stay put")
             time.sleep(1)
         rospy.wait_for_service('recorder')
@@ -255,7 +272,7 @@ class PepperOrbbec():
             print "Service call failed: %s"%e
         time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
-        ########time.sleep(2)
+        time.sleep(2)
         self.pepper_display.publish("hide")
 
 if __name__ == '__main__':
@@ -263,13 +280,13 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-	########time.sleep(3)
+	time.sleep(3)
         pa.pepper_engagement.publish(pa.Mode)
-	########time.sleep(1)
+	time.sleep(1)
         pa.pepper_engagement.publish("dialogoff")
-	########time.sleep(1)
+	time.sleep(1)
         pa.pepper_engagement.publish("disengage")
-	########time.sleep(1)
+	time.sleep(1)
         pa.pepper_Orbbec()
         rospy.spin()
     # except:
