@@ -81,7 +81,7 @@ class data_storer():
 			self.text.write("\n")
 			rospy.loginfo("recording")
 		#################################################
-		self.WritingFlag = False
+			self.WritingFlag = False
 	# def tfTransform(self,br,Attribute,BodyPOS):
 	# 	#https://docs.python.org/3/library/functions.html#getattr --> GETATTR (Example: BodyPOS/joint_position_spine_mid/x)
 	# 	br.sendTransform((getattr(getattr(BodyPOS,Attribute),"x"),getattr(getattr(BodyPOS,Attribute),"y"),getattr(getattr(BodyPOS,Attribute),"z")), #Translation
@@ -129,7 +129,8 @@ class data_storer():
 		print "inside"
 
 		time.sleep(1)
-
+		while self.WritingFlag == True:
+			StillWriting = 1
 			#rospy.loginfo(self.counter)
 			#rospy.loginfo(self.Flag)
 		print "outside"

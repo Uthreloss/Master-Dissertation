@@ -57,18 +57,18 @@ class PepperOrbbec():
         self.Mode = str(self.args[3]) # the option are "notalive" and "alive"
         self.Pace = "slow" #This variable serves to ease the data collection once the user has familiarised with the positions
         #Just in case that the input is
+        print self.Mode
         if self.Mode != "notalive" and self.Mode != "alive":
             print "MODE ERROR: Not properly written: " + str(self.Mode)
             self.Mode = "alive"
             print "Changed to: alive"
-	print self.Mode
         self.User.Bag = "New"
         self.engagement_comments = [
             "Well done!",
             "That's it!",
             "Nicely performed!",
             "Yes, keep it up!",
-            "Good job!",
+            "Remarkable!",
             "Good work!",
             "That is splendid!",
             "You are doing vey well!",
@@ -76,7 +76,7 @@ class PepperOrbbec():
             "Brilliant!",
             "Good going!",
             "Triple a!",
-            "Yes, that's it"
+            "Yeah, that's it!"
         ]
         self.positionContainer = [
             "position one",
@@ -90,12 +90,12 @@ class PepperOrbbec():
             "set four"
         ]
         self.ItContainer = [
-            "set one",
-            "set two",
-            "set three",
-            "set four",
-            "set five",
-            "set six",
+            "repetition one",
+            "repetition two",
+            "repetition three",
+            "repetition four",
+            "repetition five",
+            "repetition six",
         ]
         self.ImageContainer = [
         "https://i.imgur.com/KAYWRvM.png",
@@ -103,7 +103,7 @@ class PepperOrbbec():
         "https://i.imgur.com/4uIiVzM.png"
         ]
         self.PositionRange = 3
-        self.ItRange = 6
+        self.ItRange = 1
 
     def position_Callback(self, data):
         self.body_status = data.tracking_status # Update state
@@ -128,15 +128,15 @@ class PepperOrbbec():
             print self.User.Flag
             if self.SaidIt==False and self.SawIt== True:
             #Conversation LITTLE how are you? etc. TWO DIFFERENT INTERACTION MODES
-                #self.pepper_engagement.publish(self.Mode)
-                if (self.Set == 1 or self.Set == 3) and self.Mode == "alive":
-                    ########time.sleep(1)
+                self.pepper_engagement.publish(self.Mode)
+                if self.Set == 1 or self.Set == 3 and self.Mode == "alive":
+                    time.sleep(1)
                     self.pepper_say.publish("Hello, welcome to the robot coaching program")
-                    ########time.sleep(5)
+                    time.sleep(5)
                     self.pepper_say.publish("Would you like to do some exercise?")
                     ##self.pepper_say.publish("One")
-                    ########time.sleep(4)
-                elif (self.Set == 2 or self.Set == 4) and self.Mode == "alive":
+                    time.sleep(4)
+                elif self.Set == 2 or self.Set == 4 and self.Mode == "alive":
                     time.sleep(1)
                     self.pepper_say.publish("Hello, again!")
                     time.sleep(2)
@@ -145,14 +145,14 @@ class PepperOrbbec():
                     self.pepper_say.publish("Are you ready for another round?")
                     ##self.pepper_say.publish("One")
                     time.sleep(4)
-                elif (self.Set == 1 or self.Set == 3) and self.Mode == "notalive":
+                elif self.Set == 1 or self.Set == 3 and self.Mode == "notalive":
                     time.sleep(1)
                     self.pepper_say.publish("Hello, welcome to the robot coaching program")
                     time.sleep(5)
                     self.pepper_say.publish("Do you like to do some exercise?")
                     ##self.pepper_say.publish("One")
                     time.sleep(4)
-                elif (self.Set == 2 or self.Set == 4) and self.Mode == "notalive":
+                elif self.Set == 2 or self.Set == 4 and self.Mode == "notalive":
                     time.sleep(1)
                     self.pepper_say.publish("Hello")
                     time.sleep(2)
@@ -171,18 +171,18 @@ class PepperOrbbec():
                     break
                 ##self.pepper_say.publish("Two")
                 self.pepper_say.publish("Please, have a seat")
-                ########time.sleep(6)          #while not self.Sitted:
+                time.sleep(6)          #while not self.Sitted:
                 #input("Press Enter when the person is sitted")
                 for iteration in range(self.ItRange):
                     if iteration == 0:
                         self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
-                        ########time.sleep(4)          #while not self.Sitted:
+                        time.sleep(4)          #while not self.Sitted:
                     else:
                         self.pepper_say.publish("Now we will do " + self.ItContainer[iteration])
                         self.User.Bag = "Current"
-                        ########time.sleep(4)          #while not self.Sitted:
+                        time.sleep(4)          #while not self.Sitted:
                     #SHOW IMAGE OR EXAMPLE OF POSITION
-                    if iteration < 1: #<3
+                    if iteration < 3:
                         self.Pace = "slow"
                     else:
                         self.Pace = "quick"
@@ -191,13 +191,13 @@ class PepperOrbbec():
                         if self.SawIt == False:
                             break
                         self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
-                        ########time.sleep(3)
+                        time.sleep(3)
                         if self.Pace == "slow":
                             self.pepper_say.publish("Now, let's go for the new position")
-                            ########time.sleep(4)
+                            time.sleep(4)
                         else:
                             self.pepper_say.publish("Keep going!")
-                            ########time.sleep(2)
+                            time.sleep(2)
                         self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1),self.Pace)
                         #########time.sleep(4)
                 self.SaidIt= not self.SaidIt #Swap flag
@@ -218,32 +218,29 @@ class PepperOrbbec():
                 time.sleep(2)
                 self.pepper_say.publish("You did really well today!") # for the solitary MODE
                 time.sleep(3)
-                self.pepper_say.publish("Could you, please, fill in the questionnaires?")
- 		time.sleep(3)
- 		self.pepper_say.publish("They are on the table next to you")
+                self.pepper_say.publish("Could you please fill in the questionnaires that are next to you?") # for the solitary MODE
                 time.sleep(4)
-                #self.pepper_say.publish("I will now go to sleep")
-                #time.sleep(2)
-		self.pepper_engagement.publish("alive")
+                self.pepper_say.publish("I will now go to sleep")
+                time.sleep(2)
                 #self.pepper_engagement.publish("off")
                 break
             rate.sleep()
-        #self.pepper_display.publish("hide")
-        #self.pepper_engagement.publish("alive")
+        self.pepper_display.publish("hide")
+        self.pepper_engagement.publish("alive")
     def exercise_loop_client(self,position,BagState,CurrentPosition,setNumber,ItNumber,Speed): #Service callback
         #show IMAGE
         print "Exercising"
         if Speed == "slow":
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish("Please, move your arm to " + str(position))
-            ########time.sleep(6)          #while not self.Sitted:
+            time.sleep(6)          #while not self.Sitted:
             self.pepper_say.publish("Hold it a bit longer, please")
-            ########time.sleep(1)
+            time.sleep(1)
         else: #A bit quicker
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
-            ########time.sleep(3)          #while not self.Sitted:
-            self.pepper_say.publish("Stay put")
+            time.sleep(4)          #while not self.Sitted:
+            self.pepper_say.publish("Hold")
             time.sleep(1)
         rospy.wait_for_service('recorder')
         try:
@@ -253,7 +250,7 @@ class PepperOrbbec():
             reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
-        #time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+        time.sleep(1) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
         time.sleep(2)
         self.pepper_display.publish("hide")
@@ -263,13 +260,7 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-	########time.sleep(3)
-        pa.pepper_engagement.publish(pa.Mode)
-	########time.sleep(1)
-        pa.pepper_engagement.publish("dialogoff")
-	########time.sleep(1)
-        pa.pepper_engagement.publish("disengage")
-	########time.sleep(1)
+        # pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_Orbbec()
         rospy.spin()
     # except:
