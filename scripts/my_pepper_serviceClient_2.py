@@ -169,8 +169,18 @@ class PepperOrbbec():
                     break
                 ##self.pepper_say.publish("Two")
                 self.pepper_say.publish("Please, remain sitted for the rest of the session")
-                time.sleep(6)          #while not self.Sitted:
-                #input("Press Enter when the person is sitted")
+                time.sleep(4)          #while not self.Sitted:
+
+                #Recording resting position
+                rospy.wait_for_service('recorder')
+                try:
+                    recorder_service = rospy.ServiceProxy('recorder', UserService)
+                    BagPath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(self.Set) + "_Rest"
+                    WholePath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(self.Set) + "_Rest"
+                    reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
+                except rospy.ServiceException, e:
+                    print "Service call failed: %s"%e
+
                 for iteration in range(self.ItRange):
                     if iteration == 0:
                         self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
@@ -238,7 +248,7 @@ class PepperOrbbec():
                     self.pepper_say.publish("Could you, please, call Daniel?")
                     time.sleep(4)
                 else:
-                    self.pepper_say.publish("Now we are done")
+                    self.pepper_say.publish("Now we are done with session two")
                     time.sleep(2)
                     self.pepper_say.publish("The exercise session is over")
                     time.sleep(2)
