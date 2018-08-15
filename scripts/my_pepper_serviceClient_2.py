@@ -67,14 +67,14 @@ class PepperOrbbec():
             "Well done!",
             "That's it!",
             "Nicely performed",
-            "Keep it up",
+            "Keep it up!",
             "Good job!",
             "Good work!",
             "That is splendid!",
             "You are doing vey well!",
             "Lovely!",
             "Brilliant!",
-            "Kepp going!",
+            "Keep going!",
             "Triple a!",
             "Yes, that's it"
         ]
@@ -103,7 +103,7 @@ class PepperOrbbec():
         "https://i.imgur.com/uO0jPfh.png"
         ]
         self.PositionRange = 3
-        self.ItRange = 1
+        self.ItRange = 6
 
     def position_Callback(self, data):
         self.body_status = data.tracking_status # Update state
@@ -149,7 +149,7 @@ class PepperOrbbec():
                     time.sleep(1)
                     self.pepper_say.publish("Hello, welcome to the robot coaching program")
                     time.sleep(5)
-                    self.pepper_say.publish("Do you like to do some exercise?")
+                    self.pepper_say.publish("Do you want to do some exercise?")
                     ##self.pepper_say.publish("One")
                     time.sleep(4)
                 elif (self.Set == 2 or self.Set == 4) and self.Mode == "notalive":
@@ -177,7 +177,7 @@ class PepperOrbbec():
                     recorder_service = rospy.ServiceProxy('recorder', UserService)
                     BagPath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(self.Set) + "_Rest"
                     WholePath = self.RepoPath + "participant_" + str(self.User.UserID) + "/set_" + str(self.Set) + "_Rest"
-                    reply = recorder_service(BagPath,WholePath,self.User.BodyID,BagState)
+                    reply = recorder_service(BagPath,WholePath,self.User.BodyID,"New")
                 except rospy.ServiceException, e:
                     print "Service call failed: %s"%e
 
@@ -190,7 +190,7 @@ class PepperOrbbec():
                         self.User.Bag = "Current"
                         time.sleep(3)
                     self.pepper_say.publish("Are you ready?")
-                    time.sleep(3)
+                    time.sleep(2)
                     self.pepper_say.publish("Let's go!")
                     time.sleep(1)
 
@@ -204,24 +204,27 @@ class PepperOrbbec():
                         break
 
                     self.exercise_loop_client(self.positionContainer[0],self.User.Bag,1,self.Set,str(iteration + 1),self.Pace)
+                    if self.Mode == "alive":
+                        self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
+                        time.sleep(3)
                     for posIdx, position in enumerate(self.positionContainer[1:]):
 
                         if self.SawIt == False:
                             break
-                        if self.Mode == "alive":
-                            self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
-                        time.sleep(3)
+
                         if self.Pace == "slow":
-                            self.pepper_say.publish("Let's now go for the new position")
-                            time.sleep(1)
-                            self.pepper_say.publish("Don't we?")
-                            time.sleep(3)
+                            self.pepper_say.publish("It is time for the new position, ready?")
+                            time.sleep(4)
+                            #self.pepper_say.publish("Isn't it?")
+                            #time.sleep(3)
                         else:
-                            self.pepper_say.publish("Next one")
+                            self.pepper_say.publish("Next one!")
                             time.sleep(1)
                         self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1),self.Pace)
                         ####time.sleep(4)
-
+                        if self.Mode == "alive":
+                            self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
+                            time.sleep(3)
                     if self.SawIt == False:
                         break
 
@@ -248,7 +251,7 @@ class PepperOrbbec():
                     self.pepper_say.publish("Could you, please, call Daniel?")
                     time.sleep(4)
                 else:
-                    self.pepper_say.publish("Now we are done with session two")
+                    self.pepper_say.publish("Now we are done with sequence two")
                     time.sleep(2)
                     self.pepper_say.publish("The exercise session is over")
                     time.sleep(2)
@@ -259,7 +262,7 @@ class PepperOrbbec():
 
                     self.pepper_say.publish("Could you, please, fill in the questionnaires?")
                     time.sleep(3)
-                    self.pepper_say.publish("They are on the table next to you")
+                    self.pepper_say.publish("They are on the table on your left")
                     time.sleep(4)
                 #self.pepper_say.publish("I will now go to sleep")
                 #time.sleep(2)
@@ -303,14 +306,14 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-	time.sleep(3)
+    	time.sleep(3)
         #pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_engagement.publish("alive")
-	time.sleep(1)
+    	time.sleep(2)
         pa.pepper_engagement.publish("dialogoff")
-	time.sleep(1)
+    	time.sleep(2)
         pa.pepper_engagement.publish("hearingoff")
-	time.sleep(1)
+    	time.sleep(1)
         pa.pepper_Orbbec()
         rospy.spin()
     # except:

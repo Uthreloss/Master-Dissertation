@@ -5,7 +5,7 @@ import os, sys
 PositionRange = 3
 Sets = 4
 ItRange = 6
-Participants = 10
+Participants = 20
 for k in range(Participants):
     for i in range(Sets):
         for j in range(PositionRange):

@@ -19,6 +19,7 @@ import rospkg #To get the path of the Robag directory in the package
 class data_storer():
 
 	def __init__(self):
+		self.OpenBag = False # To know when to start writing
 		#########CHECK#########
 		#Subscriber 1 (Skeleton)
 		self.skel_sub = rospy.Subscriber(
@@ -58,7 +59,6 @@ class data_storer():
 		self.User.Flag = False #To start recording
 		##Time variable need to be duration objects/type
 		self.WritingTime=rospy.Time.now() #Pointer to write in the right plaec in the ROSBAG
-		self.OpenBag = False # To know when to start writing
 		self.StartingWritingTime = rospy.Time.now()
 		self.WritingFlag = False #To know if the files are being written
 
@@ -70,18 +70,19 @@ class data_storer():
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
-		if self.OpenBag and data.body_id == self.User.BodyID: #for 2 bodies detection avoidance
-			self.WritingFlag = True
-			Skel = body_tracker_msgs.msg.Skeleton() #Object created from message type
-			Skel = data #Save BodyPOS data in Skel
-			self.bag.write("/body_tracker/skeleton",Skel, rospy.Time.now() - self.WritingTime + self.StartingWritingTime) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
-			for BodyPart in self.Attributes: #For each bodypart send/create a tf transform
-				self.text.write("%f,%f,%f\t" % ((getattr(getattr(data,BodyPart),"x")),getattr(getattr(data,BodyPart),"y"),getattr(getattr(data,BodyPart),"z")))
-			self.text.write("%i" % len(self.Attributes))
-			self.text.write("\n")
-			rospy.loginfo("recording")
-		#################################################
-			self.WritingFlag = False
+		if self.OpenBag:
+			if data.body_id == self.User.BodyID: #for 2 bodies detection avoidance
+				self.WritingFlag = True
+				Skel = body_tracker_msgs.msg.Skeleton() #Object created from message type
+				Skel = data #Save BodyPOS data in Skel
+				self.bag.write("/body_tracker/skeleton",Skel, rospy.Time.now() - self.WritingTime + self.StartingWritingTime) #Write all data on the bag THE NAME OF THE TOPIC SHOULD BE THE SAME AS THE REAL CAMERA TOPIC
+				for BodyPart in self.Attributes: #For each bodypart send/create a tf transform
+					self.text.write("%f,%f,%f\t" % ((getattr(getattr(data,BodyPart),"x")),getattr(getattr(data,BodyPart),"y"),getattr(getattr(data,BodyPart),"z")))
+				self.text.write("%i" % len(self.Attributes))
+				self.text.write("\n")
+				rospy.loginfo("recording")
+			#################################################
+				self.WritingFlag = False
 	# def tfTransform(self,br,Attribute,BodyPOS):
 	# 	#https://docs.python.org/3/library/functions.html#getattr --> GETATTR (Example: BodyPOS/joint_position_spine_mid/x)
 	# 	br.sendTransform((getattr(getattr(BodyPOS,Attribute),"x"),getattr(getattr(BodyPOS,Attribute),"y"),getattr(getattr(BodyPOS,Attribute),"z")), #Translation
