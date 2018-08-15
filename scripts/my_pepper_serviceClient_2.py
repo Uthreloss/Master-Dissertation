@@ -70,11 +70,16 @@ class PepperOrbbec():
             "Keep it up!",
             "Good job!",
             "Good work!",
+            "Great job!",
+            "Great work!",
+            "That is super!",
             "That is splendid!",
             "You are doing vey well!",
             "Lovely!",
             "Brilliant!",
-            "Keep going!",
+            "Very well done!",
+            "Nice!",
+            "Bravo",
             "Triple a!",
             "Yes, that's it"
         ]
@@ -213,7 +218,7 @@ class PepperOrbbec():
                             break
 
                         if self.Pace == "slow":
-                            self.pepper_say.publish("It is time for the new position, ready?")
+                            self.pepper_say.publish("New position, ready?")
                             time.sleep(4)
                             #self.pepper_say.publish("Isn't it?")
                             #time.sleep(3)
@@ -279,13 +284,13 @@ class PepperOrbbec():
         if Speed == "slow":
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish("Please, move your arm to " + str(position))
-            time.sleep(6)          #while not self.Sitted:
+            time.sleep(5)          #while not self.Sitted:
             self.pepper_say.publish("Hold it a bit longer, please")
             time.sleep(2)
         else: #A bit quicker
             self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
-            time.sleep(2)          #while not self.Sitted:
+            time.sleep(3)          #while not self.Sitted:
             self.pepper_say.publish("Stay put")
             time.sleep(1)
         rospy.wait_for_service('recorder')
@@ -306,13 +311,13 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-    	time.sleep(3)
+    	time.sleep(1)
         #pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_engagement.publish("alive")
     	time.sleep(2)
-        pa.pepper_engagement.publish("dialogoff")
-    	time.sleep(2)
         pa.pepper_engagement.publish("hearingoff")
+    	time.sleep(2)
+        pa.pepper_engagement.publish("dialogoff")
     	time.sleep(1)
         pa.pepper_Orbbec()
         rospy.spin()

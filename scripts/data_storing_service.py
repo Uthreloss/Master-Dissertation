@@ -64,7 +64,7 @@ class data_storer():
 
 
 	def positionCallback(self, data): #Function that is called when the Subscriber/listener receives data
-		br = tf.TransformBroadcaster() #tf object creation
+		#br = tf.TransformBroadcaster() #tf object creation
 
 
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
