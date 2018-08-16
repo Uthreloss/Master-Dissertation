@@ -61,7 +61,7 @@ class PepperOrbbec():
             print "MODE ERROR: Not properly written: " + str(self.Mode)
             self.Mode = "alive"
             print "Changed to: alive"
-	print self.Mode
+    	print self.Mode
         self.User.Bag = "New"
         self.engagement_comments = [
             "Well done!",
@@ -312,9 +312,10 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-    	time.sleep(1)
+    	time.sleep(3)
         #pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_engagement.publish("alive")
+        print "Wake up"
     	time.sleep(2)
         #pa.pepper_engagement.publish("disengage")
     	#time.sleep(2)
