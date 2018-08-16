@@ -61,7 +61,7 @@ class data_storer():
 		self.WritingTime=rospy.Time.now() #Pointer to write in the right plaec in the ROSBAG
 		self.StartingWritingTime = rospy.Time.now()
 		self.WritingFlag = False #To know if the files are being written
-
+		self.Setup = False
 
 	def positionCallback(self, data): #Function that is called when the Subscriber/listener receives data
 		#br = tf.TransformBroadcaster() #tf object creation
@@ -70,6 +70,7 @@ class data_storer():
 		# for BodyPart in Attributes: #For each bodypart send/create a tf transform
 		# 	self.tfTransform(br,BodyPart,BodyPOS)
 		##########Saving data into a BAG file############
+		#if self.Setup == True:
 		if self.OpenBag:
 			if data.body_id == self.User.BodyID: #for 2 bodies detection avoidance
 				self.WritingFlag = True

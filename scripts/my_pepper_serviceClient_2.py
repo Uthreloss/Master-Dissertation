@@ -198,7 +198,7 @@ class PepperOrbbec():
                     time.sleep(2)
                     self.pepper_say.publish("Let's go!")
                     time.sleep(1)
-
+                    #pa.pepper_engagement.publish("pause")
                     #SHOW IMAGE OR EXAMPLE OF POSITION
                     if iteration < 1: #<3
                         self.Pace = "slow"
@@ -230,6 +230,7 @@ class PepperOrbbec():
                         if self.Mode == "alive":
                             self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
                             time.sleep(3)
+                            #pa.pepper_engagement.publish("resume")
                     if self.SawIt == False:
                         break
 
@@ -315,10 +316,13 @@ if __name__ == '__main__':
         #pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_engagement.publish("alive")
     	time.sleep(2)
-        pa.pepper_engagement.publish("hearingoff")
-    	time.sleep(2)
+        #pa.pepper_engagement.publish("disengage")
+    	#time.sleep(2)
         pa.pepper_engagement.publish("dialogoff")
-    	time.sleep(1)
+    	time.sleep(2)
+        #pa.pepper_engagement.publish("hearingoff")
+    	#time.sleep(2)
+
         pa.pepper_Orbbec()
         rospy.spin()
     # except:
