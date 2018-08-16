@@ -7,7 +7,7 @@ itNumber = 6 #Number of iterations
 Positions = 3
 Participants = 1
 Sets = 2
-Master_Diss_Path = "/home/pepper/catkin_ws/src"
+Master_Diss_Path = "/home/generic/ros_workspaces/coach_demo/src"
 for w in range(Positions):
     for p in range(Participants):
         for s in range(Sets):

@@ -6,7 +6,7 @@ import numpy as np
 itNumber = 6 #Number of iterations (default = 6)
 Positions = 3 # Default = 3
 Participants = 1 # Default = 10
-Sets = 2 # Default = 4
+Sets = 4 # Default = 4
 Master_Diss_Path = "/home/generic/ros_workspaces/coach_demo/src"
 #Read the first document to get number of columns
 with open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_1/set_1/P_1/P_1_1.txt") as f:

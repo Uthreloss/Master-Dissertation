@@ -68,8 +68,8 @@ class PepperOrbbec():
             "That's it!",
             "Nicely performed",
             "Keep it up!",
-            "Good job!",
             "Good work!",
+            "Good pose!",
             "Great job!",
             "Great work!",
             "That is super!",
@@ -82,6 +82,7 @@ class PepperOrbbec():
             "Bravo",
             "Triple a!",
             "Yes, that's it"
+            "Well copied!"
         ]
         self.positionContainer = [
             "position one",
@@ -268,7 +269,7 @@ class PepperOrbbec():
 
                     self.pepper_say.publish("Could you, please, fill in the questionnaires?")
                     time.sleep(3)
-                    self.pepper_say.publish("They are on the table on your left")
+                    self.pepper_say.publish("They are on the table next to Daniel")
                     time.sleep(4)
                 #self.pepper_say.publish("I will now go to sleep")
                 #time.sleep(2)
@@ -312,15 +313,15 @@ if __name__ == '__main__':
     if True:
         rospy.init_node('pepper_Orbbec', anonymous=True)
         pa = PepperOrbbec()
-    	time.sleep(3)
+    	time.sleep(4)
         #pa.pepper_engagement.publish(pa.Mode)
-        pa.pepper_engagement.publish("alive")
-        print "Wake up"
-    	time.sleep(3)
+        #pa.pepper_engagement.publish("alive")
+        #print "Wake up"
+    	#time.sleep(2)
         #pa.pepper_engagement.publish("disengage")
     	#time.sleep(2)
-        pa.pepper_engagement.publish("dialogoff")
-    	time.sleep(2)
+        #pa.pepper_engagement.publish("dialogoff")
+    	#time.sleep(2)
         #pa.pepper_engagement.publish("hearingoff")
     	#time.sleep(2)
 

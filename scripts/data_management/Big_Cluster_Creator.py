@@ -6,7 +6,7 @@ import numpy as np
 itNumber = 6 #Number of iterations
 Positions = 3
 Participants = 2
-Master_Diss_Path = "/home/pepper/catkin_ws/src"
+Master_Diss_Path = "/home/generic/ros_workspaces/coach_demo/src"
 for w in range(Positions):
     for p in range(Participants):
         text2copy = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/P_" + str(w+1) + "_Cluster.txt","r") #Create a text file too
