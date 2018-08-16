@@ -7,7 +7,7 @@ itNumber = 6 #Number of iterations (default = 6)
 Positions = 3 # Default = 3
 Participants = 1 # Default = 10
 Sets = 2 # Default = 4
-Master_Diss_Path = "/home/pepper/catkin_ws/src"
+Master_Diss_Path = "/home/generic/ros_workspaces/coach_demo/src"
 #Read the first document to get number of columns
 with open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_1/set_1/P_1/P_1_1.txt") as f:
     file = f.read()
@@ -15,6 +15,20 @@ fileS = file.split('\n') #Rows
 data = fileS[2:-1]
 elements = int(data[0].split('\t')[-1]) #Number of columns per .txt
 coordinates = 3
+reference = 6
+Attributes = [
+    "joint_position_head",
+    "joint_position_neck",
+    "joint_position_shoulder", #Always 0 by default
+    "joint_position_spine_top",
+    "joint_position_spine_mid",
+    "joint_position_spine_bottom",
+    "joint_position_left_shoulder",
+    "joint_position_left_elbow",
+    "joint_position_left_hand",
+    "joint_position_right_shoulder",
+    "joint_position_right_elbow",
+    "joint_position_right_hand"]
 file_text = np.zeros((itNumber, elements*coordinates))
 for p in range(Participants):
     for s in range(Sets):
@@ -32,10 +46,14 @@ for p in range(Participants):
                 for i in range(elements):
                     for j in range(rows):
                         #Average calculation
+                        ref = data[j].split('\t')[reference-1]
+                        xref = float(ref.split(',')[0])
+                        yref = float(ref.split(',')[1])
+                        zref = float(ref.split(',')[2])
                         tri = data[j].split('\t')[i] #"i" is after split is coincides with a pack of XYZ data
-                        compressed[i*coordinates]= compressed[i*coordinates] + float(tri.split(',')[0]) # X figure addition
-                        compressed[(i*coordinates)+1]= compressed[(i*coordinates)+1] + float(tri.split(',')[1]) # Y figure addition
-                        compressed[(i*coordinates)+2]= compressed[(i*coordinates)+2] + float(tri.split(',')[2]) # Z figure addition
+                        compressed[i*coordinates]= compressed[i*coordinates] + float(tri.split(',')[0]) - xref # X figure addition
+                        compressed[(i*coordinates)+1]= compressed[(i*coordinates)+1] + float(tri.split(',')[1]) - yref # Y figure addition
+                        compressed[(i*coordinates)+2]= compressed[(i*coordinates)+2] + float(tri.split(',')[2]) - zref # Z figure addition
                 compressed = compressed/rows #Final step to calculate the average
                 file_text[z,:]=compressed
 

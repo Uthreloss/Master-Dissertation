@@ -316,7 +316,7 @@ if __name__ == '__main__':
         #pa.pepper_engagement.publish(pa.Mode)
         pa.pepper_engagement.publish("alive")
         print "Wake up"
-    	time.sleep(2)
+    	time.sleep(3)
         #pa.pepper_engagement.publish("disengage")
     	#time.sleep(2)
         pa.pepper_engagement.publish("dialogoff")
