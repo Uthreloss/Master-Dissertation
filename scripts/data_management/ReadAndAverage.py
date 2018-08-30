@@ -5,7 +5,7 @@ import numpy as np
 #Core variables
 itNumber = 6 #Number of iterations (default = 6)
 Positions = 3 # Default = 3
-Participants = 1 # Default = 10
+Participants = 10 # Default = 10
 Sets = 4 # Default = 4
 Master_Diss_Path = "/home/generic/ros_workspaces/coach_demo/src"
 #Read the first document to get number of columns
@@ -66,7 +66,7 @@ for p in range(Participants):
         #Copy AND Paste
 
             #Open any old document to copy the first two lines
-            old_text = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_" + str(z+1) + ".txt","r") #Create a text file too
+            old_text = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "/P_" + str(w+1)+ "_1.txt","r") #Create a text file too
             text = open(Master_Diss_Path + "/master_dissertation/experiment_bags/participant_" + str(p+1) + "/set_" + str(s+1) + "/P_" + str(w+1) + "_Av.txt","w") #Create a text file too
             copy = False
             #Paste first two lines
