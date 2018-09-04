@@ -255,79 +255,83 @@ class PepperOrbbec():
                 BagPath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(self.Set) + "_Rest"
                 WholePath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(self.Set) + "_Rest"
                 BagState = "New"
-                self.service_call(BagPath,WholePath,BagState)
+                if self.SawIt == True:
+                    self.service_call(BagPath,WholePath,BagState)
+                    #Main loop to iterate the repetitions of the position 1, 2 and 3
 
-                #Main loop to iterate the repetitions of the position 1, 2 and 3
+                    for iteration in range(self.ItRange):
 
-                for iteration in range(self.ItRange):
+                        #If the interation is the first one self.Bag = "New" (Initialised as "New")
+                        if iteration == 0:
+                            self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
+                            self.timeDebugging(3,self.debugMode)
 
-                    #If the interation is the first one self.Bag = "New" (Initialised as "New")
-                    if iteration == 0:
-                        self.pepper_say.publish("We will start with " + self.ItContainer[iteration])
-                        self.timeDebugging(3,self.debugMode)
+                        # Otherwise the ROS bag already exists
+                        else:
+                            self.pepper_say.publish("Now we will do " + self.ItContainer[iteration])
+                            self.Bag = "Current"
+                            self.timeDebugging(3,self.debugMode)
 
-                    # Otherwise the ROS bag already exists
-                    else:
-                        self.pepper_say.publish("Now we will do " + self.ItContainer[iteration])
-                        self.Bag = "Current"
-                        self.timeDebugging(3,self.debugMode)
+                        #Some comments to introduce the current iteration
+                        self.pepper_say.publish("Are you ready?")
+                        self.timeDebugging(2,self.debugMode)
+                        self.pepper_say.publish("Let's go!")
+                        self.timeDebugging(1,self.debugMode)
 
-                    #Some comments to introduce the current iteration
-                    self.pepper_say.publish("Are you ready?")
-                    self.timeDebugging(2,self.debugMode)
-                    self.pepper_say.publish("Let's go!")
-                    self.timeDebugging(1,self.debugMode)
+                        # Pace regulation depending on the iteration
+                        if iteration < 1: #Only the first iteration is slow
+                            self.Pace = "slow"
+                        else:
+                            self.Pace = "quick"
 
-                    # Pace regulation depending on the iteration
-                    if iteration < 1: #Only the first iteration is slow
-                        self.Pace = "slow"
-                    else:
-                        self.Pace = "quick"
-
-                    #If the body is lost stop HRI
-                    if self.SawIt == False:
-                        break
-
-                    # First Pose is recorded out of the loop to better organise robot intervention
-
-                    self.exercise_loop_client(self.positionContainer[0],self.Bag,1,self.Set,str(iteration + 1),self.Pace)
-
-                    # After performing a pose record the robot will say an= random engaging comments if the "engaging" mode was stablished
-
-                    if self.Mode == "e":
-                        self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
-                        self.timeDebugging(3,self.debugMode)
-
-                    # For the remaining poses repeat the data storing
-
-                    for posIdx, position in enumerate(self.positionContainer[1:]):
-
-                        #If the body is lost stop "for" loop
+                        #If the body is lost stop HRI
                         if self.SawIt == False:
                             break
 
-                        # Comments according to pace
+                        # First Pose is recorded out of the loop to better organise robot intervention
 
-                        if self.Pace == "slow":
-                            self.pepper_say.publish("New position, ready?")
-                            self.timeDebugging(4,self.debugMode)
-                        else:
-                            self.pepper_say.publish("Next one!")
-                            self.timeDebugging(1,self.debugMode)
-
-                        # Function to address data storing for the remaining poses
-
-                        self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1),self.Pace)
-
+                        self.exercise_loop_client(self.positionContainer[0],self.Bag,1,self.Set,str(iteration + 1),self.Pace)
+                        #If the body is lost stop HRI
+                        if self.SawIt == False:
+                            break
                         # After performing a pose record the robot will say an= random engaging comments if the "engaging" mode was stablished
 
                         if self.Mode == "e":
                             self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
                             self.timeDebugging(3,self.debugMode)
 
-                    #If the body is lost stop HRI
-                    if self.SawIt == False:
-                        break
+                        # For the remaining poses repeat the data storing
+
+                        for posIdx, position in enumerate(self.positionContainer[1:]):
+
+                            #If the body is lost stop "for" loop
+                            if self.SawIt == False:
+                                break
+
+                            # Comments according to pace
+
+                            if self.Pace == "slow":
+                                self.pepper_say.publish("New position, ready?")
+                                self.timeDebugging(4,self.debugMode)
+                            else:
+                                self.pepper_say.publish("Next one!")
+                                self.timeDebugging(1,self.debugMode)
+
+                            # Function to address data storing for the remaining poses
+
+                            self.exercise_loop_client(position,"Current",posIdx+2,self.Set,str(iteration + 1),self.Pace)
+                            #If the body is lost stop HRI
+                            if self.SawIt == False:
+                                break
+                            # After performing a pose record the robot will say an= random engaging comments if the "engaging" mode was stablished
+
+                            if self.Mode == "e":
+                                self.pepper_say.publish(random.choice(self.engagement_comments)) #Not for safeguard MODE
+                                self.timeDebugging(3,self.debugMode)
+
+                        #If the body is lost stop HRI
+                        if self.SawIt == False:
+                            break
 
                 #The session is over all iteration of the three poses were performed
                 self.SaidIt= not self.SaidIt #Swap flag
@@ -382,8 +386,8 @@ class PepperOrbbec():
                     self.timeDebugging(3,self.debugMode)
                     self.pepper_say.publish("They are on the table next to Daniel")
                     self.timeDebugging(4,self.debugMode)
-                # Break the code as we do not want the robot to repeat the HRI until the user has had a break
-                break
+                    # Break the code as we do not want the robot to repeat the HRI until the user has had a break
+                    break
 
             rate.sleep() #Optional
 
@@ -393,16 +397,18 @@ class PepperOrbbec():
         #show IMAGE
 
         print "Exercising"
+        self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
+        self.timeDebugging(0.5,self.debugMode)
         if Speed == "slow":
-            self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
+
+
             self.pepper_say.publish("Please, move your arm to " + str(position))
-            self.timeDebugging(5,self.debugMode)          #while not self.Sitted:
+            self.timeDebugging(4.5,self.debugMode)
             self.pepper_say.publish("Hold it a bit longer, please")
             self.timeDebugging(2,self.debugMode)
         else: #A bit quicker
-            self.pepper_display.publish(self.ImageContainer[CurrentPosition-1])
             self.pepper_say.publish(str(position)+"!")
-            self.timeDebugging(3,self.debugMode)          #while not self.Sitted:
+            self.timeDebugging(2.5,self.debugMode)
             self.pepper_say.publish("Stay put")
             self.timeDebugging(1,self.debugMode)
 
@@ -411,12 +417,19 @@ class PepperOrbbec():
         BagPath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(setNumber)
         WholePath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(setNumber) + "/P_" + str(CurrentPosition) + "/P_" + str(CurrentPosition) + "_" + str(ItNumber)
 
-        self.service_call(BagPath,WholePath,BagState) #Method that calls the service to save the pose data over time
-
-        self.timeDebugging(1,self.debugMode) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
-        self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
-        self.timeDebugging(2,self.debugMode)
+        #If the body is still within a visible range
+        if self.SawIt == True:
+            self.service_call(BagPath,WholePath,BagState) #Method that calls the service to save the pose data over time
+            self.timeDebugging(1,self.debugMode) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
+            self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
+            self.timeDebugging(2,self.debugMode)
+        #Always hide afterwards
         self.pepper_display.publish("hide")
+        #If the body is lost the loop break out of this method
+
+
+
+
 
 ################################SERVICE#############################
     def service_call(self, BagPath, WholePath, BagState):
@@ -426,17 +439,10 @@ class PepperOrbbec():
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
             print "Expect this if the system is stopped using Ctrl+C"
-            stop = 1
-            pass
-        #Stop the whole program if the service was not available
-        if stop == 1:
-            self.pepper_say.publish("Ups!")
-            self.timeDebugging(1,self.debugMode)
-            self.pepper_say.publish("I think something is wrong with the service")
-            self.timeDebugging(3,self.debugMode)
-            self.pepper_say.publish("Could you please call Daniel?")
-            self.timeDebugging(4,self.debugMode)
-            exit()
+            print "Or if the user leaves the room during the exercise session"
+
+
+
 ################################MAIN SCRIPT#############################
 if __name__ == '__main__':
 
