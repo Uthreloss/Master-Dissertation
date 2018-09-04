@@ -14,17 +14,12 @@ import random # for random selection of encouraging comments
 
 class PepperOrbbec():
 
+################################CLASS INITIALISATION#############################
     def __init__(self):
         #Publish the string for Pepper to perform animated speech
         self.pepper_say = rospy.Publisher('pepper/say',
             String,
             queue_size=10)
-
-        # #Publish a flag for Rosbag to start recoding the topics from the camera
-        # #self.record = rospy.Publisher('pepper/flag', Bool, queue_size=10)
-        # self.record = rospy.Publisher('pepper/data',
-        #     UserData,
-        #     queue_size=10)
 
         #Publish the string for Pepper to control default modules activation
         self.pepper_engagement = rospy.Publisher('pepper/cmd',
@@ -35,7 +30,7 @@ class PepperOrbbec():
             String,
             queue_size=10)
 
-        # Wait for the service is ready
+        # Client node initialisation (Wait for the service is ready)
 
         self.connected = False
 
@@ -56,14 +51,13 @@ class PepperOrbbec():
             body_tracker_msgs.msg.Skeleton,
             self.position_Callback) #Name // Type of message and Callback
 
+    # Global class variables
+
         self.rospack = rospkg.RosPack() #Initialise ROS function for directory searching
         self.RepoPath = self.rospack.get_path('master_dissertation') +"/experiment_bags/" #Preferred location to save data in the Project
 
         self.SawIt = False #Flag to know that a person is being tracked (STARTS AS FALSE)
-#        self.body_status = 4 #Initialise body status with out of scope value. Possible outcomes
-        self.SaidIt = False  #Falg to know if the "Main speech" was pronounced (STARTS AS FALSE)
-
-        #Default message to
+        self.SaidIt = False  #Flag to know if the "Main speech" was pronounced (STARTS AS FALSE)
         #self.User = UserData()
 
         self.args = rospy.myargv(argv=sys.argv) # rospy adapatation of sys arguments
@@ -145,12 +139,12 @@ class PepperOrbbec():
         "https://i.imgur.com/o5tEwm1.png",
         "https://i.imgur.com/uO0jPfh.png"
         ]
-
+################################TIME MANAGEMENT METHOD#############################
     def timeDebugging(self, speechPause, debugMode):
         if debugMode==0:
             time.sleep(speechPause)
 
-
+###################################CALLBACK METHOD###################################
     #Function to be run when some data arrives from the camera SDK
 
     def position_Callback(self, data):
@@ -173,6 +167,9 @@ class PepperOrbbec():
         if data.tracking_status < 3 and self.SawIt== True:
             self.SawIt= not self.SawIt #Swap flag True --> False
             rospy.loginfo("ERROR: BODY LOST") #For the experimenter awareness
+
+###############################HUMAN-ROBOT INTERACTION#############################
+
 # Main function containing HRI and data storing service calling
 
     def pepper_HRI(self):
@@ -390,6 +387,8 @@ class PepperOrbbec():
 
             rate.sleep() #Optional
 
+################################PREPARATION FOR RECORDING#############################
+
     def exercise_loop_client(self,position,BagState,CurrentPosition,setNumber,ItNumber,Speed): #Service callback
         #show IMAGE
 
@@ -412,16 +411,14 @@ class PepperOrbbec():
         BagPath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(setNumber)
         WholePath = self.RepoPath + "participant_" + str(self.UserID) + "/set_" + str(setNumber) + "/P_" + str(CurrentPosition) + "/P_" + str(CurrentPosition) + "_" + str(ItNumber)
 
-        self.service_call(BagPath,WholePath,BagState)
-
-
-
+        self.service_call(BagPath,WholePath,BagState) #Method that calls the service to save the pose data over time
 
         self.timeDebugging(1,self.debugMode) #Pause to give time to manage files in data_storin_flag.py #DO NOT COMMET
         self.pepper_say.publish("Release") #Make sure the participant understands WATCH OUT!
         self.timeDebugging(2,self.debugMode)
         self.pepper_display.publish("hide")
 
+################################SERVICE#############################
     def service_call(self, BagPath, WholePath, BagState):
         stop = 0;
         try:
@@ -439,7 +436,7 @@ class PepperOrbbec():
             self.pepper_say.publish("Could you please call Daniel?")
             self.timeDebugging(4,self.debugMode)
             exit()
-
+################################MAIN SCRIPT#############################
 if __name__ == '__main__':
 
         #Initialise HRI node and call pepper class
