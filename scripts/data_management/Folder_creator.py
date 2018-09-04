@@ -1,11 +1,12 @@
 import os, sys
 
-# Path to be created
-
+# Variables for the tree creation
 PositionRange = 3
 Sets = 4
 ItRange = 6
 Participants = 20
+
+#For each participant, set and pose create a directories tree accordingly
 for k in range(Participants):
     for i in range(Sets):
         for j in range(PositionRange):

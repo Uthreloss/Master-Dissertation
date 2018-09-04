@@ -2,7 +2,6 @@
 
 import roslib #Ros libraries
 import rospy #Python library
-import tf #ROS Transform library
 import rosbag #To store data
 import numpy #To change variables types
 import time #To set ROSBAG timing
