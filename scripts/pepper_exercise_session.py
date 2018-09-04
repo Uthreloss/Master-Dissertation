@@ -425,6 +425,7 @@ class PepperOrbbec():
             reply = self.recorder_service(BagPath,WholePath,self.BodyID,BagState)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
+            print "Expect this if the system is stopped using Ctrl+C"
             stop = 1
             pass
         #Stop the whole program if the service was not available

@@ -112,7 +112,6 @@ class data_storer():
 		while self.WritingFlag == True:
 			StillWriting = 1
 
-		print(1)
 		self.OpenBag = False # The bag has been closed stop writing in the CALLBACK
 		#Bag and txt closing
 		self.bag.close()
@@ -125,7 +124,7 @@ class data_storer():
 
 if __name__ == '__main__': #Main function that calls other functions
 
-	rospy.init_node('body_data_saver_server', anonymous=True) #Node initialisation
+	rospy.init_node('body_data_saver', anonymous=True) #Node initialisation
 
 	n = data_storer() #Instantiation of the class
 
