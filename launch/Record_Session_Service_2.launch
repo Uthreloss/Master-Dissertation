@@ -4,7 +4,7 @@
     <node name="pepper_controller" pkg="brl_pepper" type="pepper.py" respawn="false" >
   </node>
 
-    <!-- Pepper Code Node-->
+    <!-- Pepper HRI Node-->
     <arg name = "set" />
     <arg name = "participant" />
     <arg name = "mode" />
@@ -13,7 +13,7 @@
 
 
 
-    <!-- Pepper Responsive Node -->
+    <!-- Data storage service node -->
     <node name="body_data_saver" pkg="master_dissertation" type="data_storing_service.py" respawn="false">
     </node>
 
@@ -21,7 +21,4 @@
     <node name="astra_body_tracker_node" pkg="astra_body_tracker" type="astra_body_tracker_node" >
     </node>
 
-    <!-- RVIZ node -->
-    <!--node pkg="rviz" type="rviz" name="$(anon rviz)" args="~/.rviz/pepper.rviz" /-->
-    <!-- https://github.com/cse481sp17/cse481c/wiki/Lab-11:-Visualizations-in-ROS-with-RViz -->
   </launch>

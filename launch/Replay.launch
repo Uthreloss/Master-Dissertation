@@ -2,18 +2,19 @@
   <!-- Variable to input on the teminal window -->
     <arg name = "set" />
     <arg name = "participant" />
-    <!-- CAREFUL WITH SPACE WHEN INPUTTING THE VARIABLES -->
 
     <!-- ROSBAG play-->
+    <!-- Uncomment lines if then paths are met on your computer -->
+
     <!-- <node pkg ="rosbag" type="play" name="rosbag" args="-l /home/generic/ros_workspaces/coach_demo/src/master_dissertation/experiment_bags/participant_$(arg participant)/set_$(arg set).bag"/> -->
     <node pkg ="rosbag" type="play" name="rosbag" args="-l /home/pepper/catkin_ws/src/master_dissertation/experiment_bags/participant_$(arg participant)/set_$(arg set).bag"/>
 
     <!-- Broadcast the Skeleton message into TF messages Node-->
     <node name="body_data_handling" pkg="master_dissertation" type="tf_broadcaster_3.py" respawn="true" >
     </node>
-    <!-- RVIZ node -->
+
+    <!-- RVIZ visualisation node -->
     <node pkg="rviz" type="rviz" name="$(anon rviz)" args="/home/generic/.rviz/pepper.rviz" />
     <!-- https://github.com/cse481sp17/cse481c/wiki/Lab-11:-Visualizations-in-ROS-with-RViz -->
-  </launch>
 
-<!--Perfectly works-->
+  </launch>

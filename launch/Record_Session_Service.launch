@@ -20,7 +20,5 @@
     <node name="astra_body_tracker_node" pkg="astra_body_tracker" type="astra_body_tracker_node" >
     </node>
 
-    <!-- RVIZ node -->
-    <!--node pkg="rviz" type="rviz" name="$(anon rviz)" args="~/.rviz/pepper.rviz" /-->
-    <!-- https://github.com/cse481sp17/cse481c/wiki/Lab-11:-Visualizations-in-ROS-with-RViz -->
+
   </launch>
