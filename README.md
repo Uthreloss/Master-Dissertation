@@ -13,16 +13,16 @@ Now check that the camera is detected using lsusb -v (Look for the name of the c
 
 Follow: https://github.com/orbbec/ros_astra_camera (You may need to install rgbd and freenect for kinetic)
 ```bash
-        sudo apt-get install ros-kinetic-rgbd-launch
-        sudo apt-get install ros-kinetic-freenect-launch
+sudo apt-get install ros-kinetic-rgbd-launch
+sudo apt-get install ros-kinetic-freenect-launch
 ```
 Now run the launch files using:
 ```bash
-        roslaunch astra_launch astra.launch
+roslaunch astra_launch astra.launch
 ```
 And use rqt to visualise it (Plugins --> Visualization --> Image) Try different topics to check that it is working:
 ```bash
-        rqt
+rqt
 ```
 ## 2.- OPENI SDK installation
 
@@ -42,15 +42,15 @@ NOTE that Software developers normally assume that you know how to compile the s
 In this case, you should first create a "build" folder inside the "Astra_SDK" directory and run the following commands so that the test files can be generated from the scripts provided by the SDK:
 
 ```bash
-      mkdir build && cd build
-      cmake ../samples/
-      make
+mkdir build && cd build
+cmake ../samples/
+make
 ```
  *(WARNING:)* if the compilation gives you any errors, check that "libsfml-dev" and "libcsfml-dev" are properly installed:
 
 ```bash
-        sudo apt-get install libsfml-dev
-        sudo apt-get install libcsfml-dev
+sudo apt-get install libsfml-dev
+sudo apt-get install libcsfml-dev
 ```
 *(If the are still libraries errors, install the remaining ones with "sudo apt-get MISSING_LIBRARY_NAME" TOO.)*
 
@@ -88,7 +88,7 @@ Install the ROS shinsel node following the instruction on:
 
 Search for something like:
 
-      home/pepper/workspace/.........
+        home/pepper/workspace/.........
 
 Also be careful with the "intalls" folder. You may have to change the path to the correct directories ;)
 
@@ -116,7 +116,7 @@ Follow: http://doc.aldebaran.com/2-4/dev/python/install_guide.html#python-instal
 
 THEN add the following line to your ~./bashrc
 ```bash
-  export PYTHONPATH=${PYTHONPATH}:/your_path_to/pynaoqi-python/lib/python2.7/site-packages
+export PYTHONPATH=${PYTHONPATH}:/your_path_to/pynaoqi-python/lib/python2.7/site-packages
 ```
 Where the path is to the SDK directory "site-packages" which contains the naoqi.py
 
@@ -142,21 +142,15 @@ Launch files:
 First configure and run:
 
 ```bash
-  python Folder_Creator.py (Set how many participants you want to collect data from and the sets to be be created)
-
-  roslaunch master_dissertation Record_Session.launch participant:=X set:=Y mode:=Z (Modes "e" = engaging // "ne" = not engaging)
-
-  roslaunch master_dissertation Replay.launch participant:=X set:=Y
+python Folder_Creator.py (Set how many participants you want to collect data from and the sets to be be created)
+roslaunch master_dissertation Record_Session.launch participant:=X set:=Y mode:=Z (Modes "e" = engaging // "ne" = not engaging)
+roslaunch master_dissertation Replay.launch participant:=X set:=Y
 ```
 After collecting data then run the rest of the files in the "data_management" folder in this order:
 ```bash
-  python ReadAndAverage.py
-
-  python Cluster_Creator.py
-
-  python Big_Cluster_Creator.py
-
-  python ReadAndAverageRest.py
-
-  python Big_Cluster_Creator_Rest.py
+python ReadAndAverage.py
+python Cluster_Creator.py
+python Big_Cluster_Creator.py
+python ReadAndAverageRest.py
+python Big_Cluster_Creator_Rest.py
 ```
