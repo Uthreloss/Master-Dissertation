@@ -1,6 +1,7 @@
 # Orbbec camera installation, compilation and integration with ROS & Pepper installation and
 Ubuntu version: 16.04 KINETIC
-Naoqi drivers: pynaoqi-python2.7-2.1.2.17-linux64 && naoqi-sdk-2.1.2.17-linux64
+
+Naoqi drivers: Python 2.7 SDK 2.5.5 Linux 64
 
 ## 1.- Camera drivers installation (Ubuntu Kinetic)
 
@@ -45,12 +46,12 @@ In this case, you should first create a "build" folder inside the "Astra_SDK" di
       cmake ../samples/
       make
 ```
- *(WARNING: if the compilation gives you any errors, check that "libsfml-dev" and "libcsfml-dev" are properly installed:)*
+ *(WARNING:)* if the compilation gives you any errors, check that "libsfml-dev" and "libcsfml-dev" are properly installed:
 
-          ```bash
-          sudo apt-get install libsfml-dev
-          sudo apt-get install libcsfml-dev
-          ```
+```bash
+        sudo apt-get install libsfml-dev
+        sudo apt-get install libcsfml-dev
+```
 *(If the are still libraries errors, install the remaining ones with "sudo apt-get MISSING_LIBRARY_NAME" TOO.)*
 
 Then if you go to build/bin you will be able to find the test files and run them making use of ./<the file you want to run>
