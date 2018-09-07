@@ -61,14 +61,18 @@ Then if you go to build/bin you will be able to find the test files and run them
 
 Use these two to terminate remaining camera commands:
 
-Detect running command
+Detect running commands:
+
     ```bash
         ps -A
         ```
-Stop them
+        
+Stop them:
+
     ```bash
         kill all <Name of the process>
         ```
+        
 ## 4.- ROS Node integration
 
 As the camera is properly working, the ros node can be safely installed and tested
