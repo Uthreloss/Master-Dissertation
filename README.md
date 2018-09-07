@@ -63,15 +63,15 @@ Use these two to terminate remaining camera commands:
 
 Detect running commands:
 
-    ```bash
-        ps -A
-        ```
+```bash
+ps -A
+```
         
 Stop them:
 
-    ```bash
-        kill all <Name of the process>
-        ```
+```bash
+kill all <Name of the process>
+```
         
 ## 4.- ROS Node integration
 
@@ -93,12 +93,15 @@ Search for something like:
 Also be careful with the "intalls" folder. You may have to change the path to the correct directories ;)
 
 Lastly, make sure the basrc file is sourced:
+
 ```bash
-      source ~/.bashrc
+source ~/.bashrc
 ```
+
 Export lines hsould ALWAYS be BEFORE the source lines. To gedit
+
 ```bash
-      gedit ~/.bashrc
+gedit ~/.bashrc
 ```
 ## 5.- Pepper Pytho SDK installation
 
@@ -127,11 +130,10 @@ If everything is installed, referenced and running:
 
 ## 6.- Exercising + data collection module Installation
 
+```bash
 git clone https://github.com/Uthreloss/Master-Dissertation.git
-
-AND
-
 git clone https://github.com/Uthreloss/user_srv.git
+```
 
 *(WARNING: Check that the paths for all scripts correspond to those on your machine)*
 
