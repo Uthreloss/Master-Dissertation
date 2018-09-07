@@ -142,6 +142,9 @@ Launch files:
 First configure and run:
 
 ```bash
+roscd master_dissertation/scripts
+mkdir experiment_bags
+roscd data_management
 python Folder_Creator.py (Set how many participants you want to collect data from and the sets to be be created)
 roslaunch master_dissertation Record_Session.launch participant:=X set:=Y mode:=Z (Modes "e" = engaging // "ne" = not engaging)
 roslaunch master_dissertation Replay.launch participant:=X set:=Y
