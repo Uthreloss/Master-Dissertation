@@ -2,7 +2,7 @@
 Ubuntu version: 16.04 KINETIC
 Naoqi drivers: pynaoqi-python2.7-2.1.2.17-linux64 && naoqi-sdk-2.1.2.17-linux64
 
-##1.- Camera drivers installation (Ubuntu Kinetic)
+## 1.- Camera drivers installation (Ubuntu Kinetic)
 
 First of all, make sure that the rules are set with the name "56-orbbec.rules" in /etc/udev/rules.d/ (556 is not correct as it does not consider the rules in the highest priority)
 
@@ -23,7 +23,7 @@ And use rqt to visualise it (Plugins --> Visualization --> Image) Try different 
 ```bash
         rqt
 ```
-##2.- OPENI SDK installation
+## 2.- OPENI SDK installation
 
 The next step is to install OPENI2SDK
 
@@ -33,7 +33,7 @@ Also CHECK that there is only one rules dile atthe "/etc/udev/rules.d" directory
 
 Finally vewrify that it works by running one of the samples in SAMPLES or TOOLS folder inside the SDK (g.e. "./NiViewer")
 
-##3.- ORBBEC SDK installation
+## 3.- ORBBEC SDK installation
 
 IF everything runs without errors, it is time to install the Astra Orbbec SDK.
 
@@ -45,13 +45,13 @@ In this case, you should first create a "build" folder inside the "Astra_SDK" di
       cmake ../samples/
       make
 ```
- *(WARNING: if the compilation gives you any errors, check that "libsfml-dev" and "libcsfml-dev" are properly installed:
+ *(WARNING: if the compilation gives you any errors, check that "libsfml-dev" and "libcsfml-dev" are properly installed:)*
 
           ```bash
           sudo apt-get install libsfml-dev
           sudo apt-get install libcsfml-dev
           ```
-If the are still libraries errors, install the remaining ones with "sudo apt-get MISSING_LIBRARY_NAME" TOO.)*
+*(If the are still libraries errors, install the remaining ones with "sudo apt-get MISSING_LIBRARY_NAME" TOO.)*
 
 Then if you go to build/bin you will be able to find the test files and run them making use of ./<the file you want to run>
     The body tracking file is "./SimpleBodyViewer-SFML"
@@ -68,7 +68,7 @@ Stop them
     ```bash
         kill all <Name of the process>
         ```
-##4.- ROS Node integration
+## 4.- ROS Node integration
 
 As the camera is properly working, the ros node can be safely installed and tested
 
@@ -95,7 +95,7 @@ Export lines hsould ALWAYS be BEFORE the source lines. To gedit
 ```bash
       gedit ~/.bashrc
 ```
-##5.- Pepper Pytho SDK installation
+## 5.- Pepper Pytho SDK installation
 
 To have the Pepper robotic platform running you should carefully follow this instruction:
 
@@ -120,7 +120,7 @@ If everything is installed, referenced and running:
     * Access Wi-Fi (I used the Assisted Living Studio Local network)
     * git clone git@git.brl.ac.uk:AssistedLivingGroup/brl_pepper.git
 
-##6.- Exercising + data collection module Installation
+## 6.- Exercising + data collection module Installation
 
 git clone https://github.com/Uthreloss/Master-Dissertation.git
 
