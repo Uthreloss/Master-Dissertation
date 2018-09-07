@@ -4,7 +4,7 @@ import os, sys
 PositionRange = 3
 Sets = 4
 ItRange = 6
-Participants = 20
+Participants = 10
 
 #For each participant, set and pose create a directories tree accordingly
 for k in range(Participants):

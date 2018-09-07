@@ -84,7 +84,7 @@ class PepperOrbbec():
         self.PositionRange = 3 #Of PositionRange poses
 
         # Debug mode to remove pause in the HRI
-        self.debugMode = 0 #1 disables time delays
+        self.debugMode = 1 #1 disables time delays
 
         #Compilation of potential engaging comments
         self.engagement_comments = [
